@@ -1,0 +1,6 @@
+# Development configuration for the Suvadugal DSpace REST API.
+rest:
+  ssl: true
+  host: suvadugal.tholkudi.in
+  port: 443
+  nameSpace: /server
