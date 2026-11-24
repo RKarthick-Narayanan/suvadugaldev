@@ -7,17 +7,6 @@
  */
 
 import { TestBed } from '@angular/core/testing';
-import {
-  APP_CONFIG,
-  AppConfig,
-} from '@dspace/config/app-config.interface';
-import { BrowseService } from '@dspace/core/browse/browse.service';
-import { ObjectCacheService } from '@dspace/core/cache/object-cache.service';
-import { BrowseDefinition } from '@dspace/core/shared/browse-definition.model';
-import { BrowseServiceStub } from '@dspace/core/testing/browse-service.stub';
-import { getMockObjectCacheService } from '@dspace/core/testing/object-cache.service.mock';
-import { createPaginatedList } from '@dspace/core/testing/utils.test';
-import { createSuccessfulRemoteDataObject$ } from '@dspace/core/utilities/remote-data.utils';
 
 import { MenuItemType } from '../menu-item-type.model';
 import { PartialMenuSection } from '../menu-provider.model';
@@ -34,53 +23,10 @@ describe('BrowseMenuProvider', () => {
     icon: 'globe',
   };
 
-  const expectedSubSections: (enableMapLink: boolean) => PartialMenuSection[] = (enableMapLink) => [
-    {
-      visible: true,
-      model: {
-        type: MenuItemType.LINK,
-        text: 'menu.section.browse_global_by_author',
-        link: '/browse/author',
-      },
-    },
-    {
-      visible: true,
-      model: {
-        type: MenuItemType.LINK,
-        text: 'menu.section.browse_global_by_subject',
-        link: '/browse/subject',
-      },
-    },
-    {
-      visible: enableMapLink,
-      model: {
-        type: MenuItemType.LINK,
-        text: `menu.section.browse_global_geospatial_map`,
-        link: `/browse/map`,
-      },
-    },
-  ];
-
-
   let provider: BrowseMenuProvider;
-  let browseServiceStub = BrowseServiceStub;
 
   beforeEach(() => {
-    spyOn(browseServiceStub, 'getBrowseDefinitions').and.returnValue(
-      createSuccessfulRemoteDataObject$(createPaginatedList([
-        { id: 'author' } as BrowseDefinition,
-        { id: 'subject' } as BrowseDefinition,
-      ])),
-    );
-
-    TestBed.configureTestingModule({
-      providers: [
-        BrowseMenuProvider,
-        { provide: BrowseService, useValue: browseServiceStub },
-        { provide: ObjectCacheService, useValue: getMockObjectCacheService() },
-        { provide: APP_CONFIG, useValue: { geospatialMapViewer: { enableBrowseMap: true } } as AppConfig },
-      ],
-    });
+    TestBed.configureTestingModule({ providers: [BrowseMenuProvider] });
     provider = TestBed.inject(BrowseMenuProvider);
   });
 
@@ -95,17 +41,23 @@ describe('BrowseMenuProvider', () => {
     });
   });
 
-  it('getSubSections should return expected menu sections', (done) => {
+  it('returns exactly four translated Discovery links in Suvadugal order', (done) => {
     provider.getSubSections().subscribe((sections) => {
-      expect(sections).toEqual(expectedSubSections(true));
-      done();
-    });
-  });
-
-  it('getSubSections should return expected menu sections', (done) => {
-    TestBed.inject(APP_CONFIG).geospatialMapViewer.enableBrowseMap = false;
-    provider.getSubSections().subscribe((sections) => {
-      expect(sections).toEqual(expectedSubSections(false));
+      const expected = [
+        ['artform', 'ArtForm,equals'],
+        ['artist', 'ArtistProfile,equals'],
+        ['instrument', 'Instrument,equals'],
+        ['performance', 'Performance,equals'],
+      ].map(([label, filter]) => ({
+        visible: true,
+        model: {
+          type: MenuItemType.LINK,
+          text: `menu.section.browse_global_by_${label}`,
+          link: '/search',
+          queryParams: { 'f.entityType': filter },
+        },
+      }));
+      expect(sections).toEqual(expected);
       done();
     });
   });

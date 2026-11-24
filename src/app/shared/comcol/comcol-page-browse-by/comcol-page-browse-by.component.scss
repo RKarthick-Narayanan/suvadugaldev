@@ -1,0 +1,17 @@
+.comcol-browse {
+  width: 100%;
+}
+
+.list-group-horizontal > .list-group-item {
+  display: flex;
+  flex: 1 1 0;
+  min-width: 0;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.list-group-horizontal > .comcol-browse__comcols {
+  flex-grow: 2;
+}

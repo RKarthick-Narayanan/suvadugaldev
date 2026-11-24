@@ -21,3 +21,18 @@
     font-size: 1.1rem
   }
 }
+
+@font-face {
+  font-family: "Playfair Display";
+  src: url("/assets/dspace/fonts/playfair-display.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 400 900;
+  font-display: swap;
+}
+@font-face {
+  font-family: Roboto;
+  src: url("/assets/dspace/fonts/roboto-regular.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}

@@ -1,4 +1,49 @@
 {
+  "suvadugal.card.entity.space": "Performance Space",
+  "suvadugal.card.entity.performance": "Performance",
+  "suvadugal.card.entity.instrument": "Instrument",
+  "suvadugal.card.entity.artist": "Artist Profile",
+  "suvadugal.card.entity.artform": "Art Form",
+  "suvadugal.card.view": "View Item",
+  "suvadugal.card.noimage": "Image unavailable",
+  "suvadugal.home.recent.subtitle": "Newly documented content and culture",
+  "suvadugal.home.domain.description": "Discover performance traditions and artistic practices.",
+  "suvadugal.home.recent.title": "Recent Additions",
+  "suvadugal.footer.about": "About",
+  "suvadugal.footer.information": "Information & Policies",
+  "suvadugal.footer.contact": "Contact",
+  "suvadugal.footer.links": "Important Links",
+  "suvadugal.footer.social": "Department of Social Justice, Government of Tamil Nadu",
+  "suvadugal.footer.tribal": "Directorate of Tribal Welfare, Government of Tamil Nadu",
+  "suvadugal.footer.ministry": "Ministry of Tribal Affairs, Government of India",
+
+  "suvadugal.home.recent.empty": "No recent additions are available.",
+  "suvadugal.hero.label": "Heritage image carousel",
+  "suvadugal.hero.previous": "Previous image",
+  "suvadugal.hero.next": "Next image",
+  "suvadugal.hero.pause": "Pause",
+  "suvadugal.hero.play": "Play",
+  "suvadugal.hero.slide": "Image {{number}} of 4",
+  "suvadugal.hero.image.1": "Traditional musicians and performers",
+  "suvadugal.hero.image.2": "Traditional performers in costume",
+  "suvadugal.hero.image.3": "Dancers and performers",
+  "suvadugal.hero.image.4": "Traditional musicians and dancers",
+
+  "suvadugal.home.title": "Discover Tamil Nadu’s Art Heritage",
+  "suvadugal.home.entities": "Explore the Archive",
+  "suvadugal.home.entities.description": "Browse by art form, artist profile and instrument.",
+  "suvadugal.home.entity.artform": "Browse by Art Form",
+  "suvadugal.home.entity.artform.description": "Discover performance traditions and artistic practices.",
+  "suvadugal.home.entity.artist": "Browse by Artist Profile",
+  "suvadugal.home.entity.artist.description": "Find artists, performers, and cultural knowledge holders.",
+  "suvadugal.home.entity.instrument": "Browse by Instrument",
+  "suvadugal.home.entity.instrument.description": "Explore traditional instruments and their contexts.",
+  "suvadugal.home.domains": "Art Domains For You",
+  "suvadugal.home.domains.description": "Explore the art domains in the repository.",
+  "suvadugal.home.domain.performing": "Performing Arts",
+  "suvadugal.home.domain.fine": "Fine Arts",
+  "suvadugal.home.domain.martial": "Martial Arts",
+
   "401.help": "You're not authorized to access this page. You can use the button below to get back to the home page.",
 
   "401.link.home-page": "Take me to the home page",
@@ -31,8 +76,7 @@
 
   "error-page.description.404": "Page not found",
 
-  "error-page.orcid.generic-error": "An error occurred during login via ORCID. Make sure you have shared your ORCID account email address with DSpace. If the error persists, contact the administrator",
-
+  "error-page.orcid.generic-error": "An error occurred during login via ORCID. Make sure you have shared your ORCID account email address with Suvadugal. If the error persists, contact the administrator",
   "listelement.badge.access-status": "Access status:",
 
   "access-status.embargo.listelement.badge": "Embargo",
@@ -1090,6 +1134,10 @@
   "browse.back.all-results": "All browse results",
 
   "browse.comcol.by.author": "By Author",
+  "browse.comcol.by.artist": "Artist",
+  "browse.comcol.by.instrument": "Instrument",
+  "browse.comcol.by.performance": "Performance",
+  "browse.comcol.by.artform": "Art Form",
 
   "browse.comcol.by.dateissued": "By Issue Date",
 
@@ -1891,8 +1939,7 @@
 
   "dso-selector.set-scope.community.head": "Select a search scope",
 
-  "dso-selector.set-scope.community.button": "Search all of DSpace",
-
+  "dso-selector.set-scope.community.button": "Search all of Suvadugal",
   "dso-selector.set-scope.community.or-divider": "or",
 
   "dso-selector.set-scope.community.input-header": "Search for a community or collection",
@@ -2369,8 +2416,7 @@
 
   "home.title": "Home",
 
-  "home.top-level-communities.head": "Communities in DSpace",
-
+  "home.top-level-communities.head": "Communities in Suvadugal",
   "home.top-level-communities.help": "Select a community to browse its collections.",
 
   "info.accessibility-settings.breadcrumbs": "Accessibility settings",
@@ -2441,8 +2487,7 @@
 
   "info.feedback.title": "Feedback",
 
-  "info.feedback.info": "Thanks for sharing your feedback about the DSpace system. Your comments are appreciated!",
-
+  "info.feedback.info": "Thanks for sharing your feedback about the Suvadugal system. Your comments are appreciated!",
   "info.feedback.email_help": "This address will be used to follow up on your feedback.",
 
   "info.feedback.send": "Send Feedback",
@@ -3012,6 +3057,11 @@
   "item.page.publisher": "Publisher",
 
   "item.page.titleprefix": "Item: ",
+  "artform.page.titleprefix": "Art Form: ",
+  "artistprofile.page.titleprefix": "Artist Profile: ",
+  "instrument.page.titleprefix": "Instrument: ",
+  "performance.page.titleprefix": "Performance: ",
+  "space.page.titleprefix": "Cultural Space: ",
 
   "item.page.volume-title": "Volume Title",
 
@@ -3636,8 +3686,7 @@
 
   "login.form.forgot-password": "Have you forgotten your password?",
 
-  "login.form.header": "Please log in to DSpace",
-
+  "login.form.header": "Please log in to Suvadugal",
   "login.form.new-user": "New user? Click here to register.",
 
   "login.form.oidc": "Log in with OIDC",
@@ -3656,8 +3705,7 @@
 
   "login.breadcrumbs": "Login",
 
-  "logout.form.header": "Log out from DSpace",
-
+  "logout.form.header": "Log out from Suvadugal",
   "logout.form.submit": "Log out",
 
   "logout.title": "Logout",
@@ -3698,7 +3746,22 @@
 
   "menu.section.browse_community_by_title": "By Title",
 
-  "menu.section.browse_global": "All of DSpace",
+  "menu.section.browse_global": "All of Suvadugal",
+  "menu.section.browse_global_by_artform": "Art Forms",
+
+  "menu.section.browse_global_by_artist": "Artists",
+
+  "menu.section.browse_global_by_instrument": "Instruments",
+
+  "menu.section.browse_global_by_performance": "Performances",
+
+  "menu.section.browse_global_by_eventspace": "Performance Spaces",
+
+  "menu.section.browse_global_by_subclass": "Art Form Categories",
+
+  "menu.section.browse_global_by_ptype": "Practitioner Types",
+
+  "menu.section.browse_global_by_itype": "Instrument Types",
 
   "menu.section.browse_global_by_author": "By Author",
 
@@ -3850,8 +3913,7 @@
 
   "metadata.security.level.title": "Metatada security level {{level}}",
 
-  "mydspace.breadcrumbs": "MyDSpace",
-
+  "mydspace.breadcrumbs": "My Suvadugal",
   "mydspace.description": "",
 
   "mydspace.messages.controller-help": "Select this option to send a message to item's submitter.",
@@ -3904,8 +3966,7 @@
 
   "mydspace.results.no-uri": "No URI",
 
-  "mydspace.search-form.placeholder": "Search in MyDSpace...",
-
+  "mydspace.search-form.placeholder": "Search in My Suvadugal...",
   "mydspace.show.workflow": "Workflow tasks",
 
   "mydspace.show.workspace": "Your submissions",
@@ -3914,8 +3975,7 @@
 
   "mydspace.show.supervisedWorkspace": "Supervised items",
 
-  "mydspace.status": "My DSpace status:",
-
+  "mydspace.status": "My Suvadugal status:",
   "mydspace.status.mydspaceArchived": "Archived",
 
   "mydspace.status.mydspaceValidation": "Validation",
@@ -3926,8 +3986,7 @@
 
   "mydspace.status.mydspaceWorkspace": "Workspace",
 
-  "mydspace.title": "MyDSpace",
-
+  "mydspace.title": "My Suvadugal",
   "mydspace.upload.upload-failed": "Error creating new workspace. Please verify the content uploaded before retry.",
 
   "mydspace.upload.upload-failed-manyentries": "Unprocessable file. Detected too many entries but allowed only one for file.",
@@ -3946,8 +4005,7 @@
 
   "notification.suggestion.please": "Please",
 
-  "nav.browse.header": "All of DSpace",
-
+  "nav.browse.header": "All of Suvadugal",
   "nav.community-browse.header": "By Community",
 
   "nav.context-help-toggle": "Toggle context help",
@@ -3962,8 +4020,7 @@
 
   "nav.main.description": "Main navigation bar",
 
-  "nav.mydspace": "MyDSpace",
-
+  "nav.mydspace": "My Suvadugal",
   "nav.profile": "Profile",
 
   "nav.search": "Search",
@@ -4090,8 +4147,7 @@
 
   "quality-assurance.event.reject.description": "This operation can't be undone. Reject this suggestion?",
 
-  "quality-assurance.event.accept.description": "No DSpace project selected. A new project will be created based on the suggestion data.",
-
+  "quality-assurance.event.accept.description": "No Suvadugal project selected. A new project will be created based on the suggestion data.",
   "quality-assurance.event.action.cancel": "Cancel",
 
   "quality-assurance.event.action.saved": "Your decision has been saved successfully.",
@@ -4590,8 +4646,7 @@
 
   "register-page.registration.header": "New user registration",
 
-  "register-page.registration.info": "Register an account to subscribe to collections for email updates, and submit new items to DSpace.",
-
+  "register-page.registration.info": "Register an account to subscribe to collections for email updates, and submit new items to Suvadugal.",
   "register-page.registration.email": "Email Address *",
 
   "register-page.registration.email.error.required": "Please fill in an email address",
@@ -4688,10 +4743,8 @@
 
   "repository.image.logo": "Repository logo",
 
-  "repository.title": "DSpace Repository",
-
-  "repository.title.prefix": "DSpace Repository :: ",
-
+  "repository.title": "Suvadugal Repository",
+  "repository.title.prefix": "Suvadugal Repository :: ",
   "resource-policies.add.button": "Add",
 
   "resource-policies.add.for.": "Add a new policy",
@@ -5154,8 +5207,7 @@
 
   "search.form.search_dspace": "All repository",
 
-  "search.form.scope.all": "All of DSpace",
-
+  "search.form.scope.all": "All of Suvadugal",
   "search.results.head": "Search Results",
 
   "search.results.no-results": "Your search returned no results. Having trouble finding what you're looking for? Try putting",
@@ -5330,10 +5382,8 @@
 
   "submission.import-external.title.none": "Import metadata from an external source",
 
-  "submission.import-external.page.hint": "Enter a query above to find items from the web to import in to DSpace.",
-
-  "submission.import-external.back-to-my-dspace": "Back to MyDSpace",
-
+  "submission.import-external.page.hint": "Enter a query above to find items from the web to import in to Suvadugal.",
+  "submission.import-external.back-to-my-dspace": "Back to My Suvadugal",
   "submission.import-external.search.placeholder": "Search the external source",
 
   "submission.import-external.search.button": "Search",
@@ -6250,8 +6300,7 @@
 
   "thumbnail.person.placeholder": "No Profile Picture Available",
 
-  "title": "DSpace",
-
+  "title": "Suvadugal",
   "vocabulary-treeview.header": "Hierarchical tree view",
 
   "vocabulary-treeview.load-more": "Load more",

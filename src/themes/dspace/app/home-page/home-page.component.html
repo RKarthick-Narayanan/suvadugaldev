@@ -1,0 +1,77 @@
+@if (homeHeaderMetadataValue$ | async; as homeHeaderMetadataValue) {
+  <div class="container home-header">
+    <ds-markdown-viewer [value]="homeHeaderMetadataValue"></ds-markdown-viewer>
+  </div>
+}
+<ds-home-coar></ds-home-coar>
+<section class="hero" role="region" [attr.aria-label]="'suvadugal.hero.label' | translate"
+  (mouseenter)="pauseCarousel()" (focusin)="pauseCarousel()">
+  <img class="hero__image" [src]="'assets/dspace/images/suvadugal/' + slides[activeSlide]"
+    [alt]="('suvadugal.hero.image.' + (activeSlide + 1)) | translate" width="1280" height="400">
+  <div class="hero__controls">
+    <button type="button" (click)="selectSlide(activeSlide - 1)" [attr.aria-label]="'suvadugal.hero.previous' | translate">‹</button>
+    @for (slide of slides; track slide; let i = $index) {
+      <button class="hero__indicator" type="button" (click)="selectSlide(i)" [attr.aria-label]="('suvadugal.hero.slide' | translate: { number: i + 1 })"
+        [attr.aria-current]="activeSlide === i ? 'true' : null">{{ i + 1 }}</button>
+    }
+    <button type="button" (click)="selectSlide(activeSlide + 1)" [attr.aria-label]="'suvadugal.hero.next' | translate">›</button>
+    <button type="button" (click)="toggleCarousel()">{{ (isPlaying ? 'suvadugal.hero.pause' : 'suvadugal.hero.play') | translate }}</button>
+  </div>
+  <span class="visually-hidden" [attr.aria-live]="isPlaying ? 'off' : 'polite'">{{ 'suvadugal.hero.slide' | translate: { number: activeSlide + 1 } }}</span>
+</section>
+<ds-home-news></ds-home-news>
+
+@if (showDiscoverFilters) {
+  <ds-configuration-search-page [sideBarWidth]="3" [showViewModes]="false"
+    [searchEnabled]="false" [inPlaceSearch]="false" [showScopeSelector]="false">
+    <ng-container searchContentTop *ngTemplateOutlet="homeContent"></ng-container>
+  </ds-configuration-search-page>
+} @else {
+  <ng-container *ngTemplateOutlet="homeContent"></ng-container>
+}
+<ds-suggestions-popup></ds-suggestions-popup>
+
+<ng-template #homeContent>
+  <section class="archive-search" aria-labelledby="archive-search-title">
+    <h1 id="archive-search-title">{{ 'suvadugal.home.title' | translate }}</h1>
+    <div class="archive-search__form">
+      <ds-search-form [inPlaceSearch]="false" [searchPlaceholder]="'home.search-form.placeholder' | translate"></ds-search-form>
+    </div>
+  </section>
+
+  <section class="browse-section" aria-labelledby="entity-title">
+    <h2 id="entity-title">{{ 'suvadugal.home.entities' | translate }}</h2>
+    <p>{{ 'suvadugal.home.entities.description' | translate }}</p>
+    <div class="browse-grid">
+      @for (entity of entities; track entity.id) {
+        <a class="browse-card" [class]="'browse-card browse-card--' + entity.id"
+          routerLink="/search" [queryParams]="{ 'f.entityType': entity.type + ',equals' }">
+          <span class="browse-card__body">
+            <span class="browse-card__title">{{ 'suvadugal.home.entity.' + entity.id | translate }}</span>
+            <span class="browse-card__description">{{ 'suvadugal.home.entity.' + entity.id + '.description' | translate }}</span>
+            <span class="browse-card__arrow" aria-hidden="true">⟶</span>
+          </span>
+        </a>
+      }
+    </div>
+  </section>
+
+  <section class="browse-section browse-section--domains" aria-labelledby="domain-title">
+    <h2 id="domain-title">{{ 'suvadugal.home.domains' | translate }}</h2>
+    <p>{{ 'suvadugal.home.domains.description' | translate }}</p>
+    <div class="browse-grid">
+      @for (domain of domains; track domain.id) {
+        <a class="browse-card" [class]="'browse-card browse-card--' + domain.id" [routerLink]="domain.route">
+          <span class="browse-card__body">
+            <span class="browse-card__title">{{ 'suvadugal.home.domain.' + domain.id | translate }}</span>
+            <span class="browse-card__description">{{ 'suvadugal.home.domain.description' | translate }}</span>
+            <span class="browse-card__arrow" aria-hidden="true">⟶</span>
+          </span>
+        </a>
+      }
+    </div>
+  </section>
+  @if (recentSubmissionspageSize > 0) {
+    <ds-suvadugal-recent-additions></ds-suvadugal-recent-additions>
+  }
+</ng-template>

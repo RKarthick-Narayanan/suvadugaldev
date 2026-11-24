@@ -1,0 +1,47 @@
+<section class="recent" aria-labelledby="recent-title">
+  <h2 id="recent-title">{{ 'suvadugal.home.recent.title' | translate }}</h2>
+  <p class="recent__subtitle">{{ 'suvadugal.home.recent.subtitle' | translate }}</p>
+  @if (itemRD$ | async; as result) {
+    @if (result.hasSucceeded) {
+      @if (result.payload?.page?.length) {
+        <div class="recent__grid">
+          @for (item of result.payload.page; track item.id) {
+            <article class="recent-card">
+              <div class="recent-card__media">
+                @if (item.thumbnail) {
+                  <ds-thumbnail [thumbnail]="item.thumbnail | async" [limitWidth]="false" [alt]="'thumbnail.default.alt'" [placeholder]="'suvadugal.card.noimage'"></ds-thumbnail>
+                } @else {
+                  <span class="recent-card__fallback">{{ 'suvadugal.card.noimage' | translate }}</span>
+                }
+              </div>
+              <div class="recent-card__content">
+                <h3>{{ item.name || ('dso.name.untitled' | translate) }}</h3>
+                <div class="recent-card__badges">
+                  @if (entityKey(item); as entity) { <span class="recent-card__entity">{{ entity | translate }}</span> }
+                  @if (item.accessStatus; as accessStatus) {
+                    @if (accessStatus | async; as access) {
+                      @if (access.hasSucceeded && accessKey(access.payload?.status); as status) {
+                        <span class="recent-card__access">{{ status | translate }}</span>
+                      }
+                    }
+                  }
+                </div>
+                <a class="recent-card__view" [routerLink]="itemRoute(item)">{{ 'suvadugal.card.view' | translate }}</a>
+              </div>
+            </article>
+          }
+        </div>
+      } @else {
+        <p>{{ 'suvadugal.home.recent.empty' | translate }}</p>
+      }
+    }
+    @if (result.hasFailed) {
+      <ds-error message="{{ 'error.recent-submissions' | translate }}"></ds-error>
+    }
+    @if (result.isLoading) {
+      <ds-loading message="{{ 'loading.recent-submissions' | translate }}"></ds-loading>
+    }
+  } @else {
+    <ds-loading message="{{ 'loading.recent-submissions' | translate }}"></ds-loading>
+  }
+</section>

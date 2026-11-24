@@ -1,0 +1,36 @@
+<footer class="suvadugal-footer">
+  @if (showTopFooter) {
+    @if (footerMetadataValue$ | async; as footerMetadataValue) {
+      <ds-markdown-viewer [value]="footerMetadataValue"></ds-markdown-viewer>
+    }
+  }
+  @let showFeedback = showSendFeedback$ | async;
+  <div class="footer-grid" [class.footer-grid--three]="showPrivacyPolicy && showFeedback"
+    [class.footer-grid--two]="showPrivacyPolicy !== !!showFeedback">
+    @if (showPrivacyPolicy) {
+      <section>
+        <h2>{{ footerGroups.information.heading | translate }}</h2>
+        <a routerLink="/info/privacy">{{ 'footer.link.privacy-policy' | translate }}</a>
+      </section>
+    }
+    @if (showFeedback) {
+      <section>
+        <h2>{{ footerGroups.contact.heading | translate }}</h2>
+        <a routerLink="/info/feedback">{{ 'footer.link.feedback' | translate }}</a>
+      </section>
+    }
+    <section>
+      <h2>{{ footerGroups.links.heading | translate }}</h2>
+      <a href="https://tnadwpoa.tn.gov.in/">{{ 'suvadugal.footer.social' | translate }}</a>
+      <a href="https://www.tntribalwelfare.tn.gov.in/">{{ 'suvadugal.footer.tribal' | translate }}</a>
+      <a href="https://tribal.nic.in/home.aspx">{{ 'suvadugal.footer.ministry' | translate }}</a>
+    </section>
+  </div>
+  <div class="footer-utility">
+    @if (showCookieSettings) { <button type="button" (click)="openCookieSettings()">{{ 'footer.link.cookies' | translate }}</button> }
+    <a routerLink="/info/accessibility">{{ 'footer.link.accessibility' | translate }}</a>
+    @if (showEndUserAgreement) { <a routerLink="/info/end-user-agreement">{{ 'footer.link.end-user-agreement' | translate }}</a> }
+    @if (coarLdnEnabled$ | async) { <a routerLink="/info/coar-notify-support">{{ 'footer.link.coar-notify-support' | translate }}</a> }
+  </div>
+  <p class="attribution"><a href="https://www.dspace.org/">{{ 'footer.link.dspace' | translate }}</a> {{ 'footer.copyright' | translate:{year: dateObj | date:'y'} }} <a href="https://www.lyrasis.org/">{{ 'footer.link.lyrasis' | translate }}</a></p>
+</footer>

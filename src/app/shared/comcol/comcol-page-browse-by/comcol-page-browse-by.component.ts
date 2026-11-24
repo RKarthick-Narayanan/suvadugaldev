@@ -50,6 +50,8 @@ export interface ComColPageNavOption {
   params?: any;
 }
 
+const SUVADUGAL_BROWSE_INDEXES = ['artist', 'instrument', 'performance', 'artform'];
+
 /**
  * A component to display the "Browse By" section of a Community or Collection page
  * It expects the ID of the Community or Collection as input to be passed on as a scope
@@ -113,17 +115,14 @@ export class ComcolPageBrowseByComponent implements OnDestroy, OnInit {
             });
           }
 
-          allOptions.push(...browseDefListRD.payload.page.map((config: BrowseDefinition) => ({
-            id: `browse_${config.id}`,
-            label: `browse.comcol.by.${config.id}`,
-            routerLink: `${comColRoute}/browse/${config.id}`,
-          })));
-
-          // When the default tab is not the "search" tab, the "search" tab is moved
-          // at the end of the tabs ribbon for aesthetics purposes.
-          if (this.appConfig[this.contentType].defaultBrowseTab !== 'search') {
-            allOptions.push(allOptions.shift());
-          }
+          allOptions.push(...SUVADUGAL_BROWSE_INDEXES.flatMap((id) => {
+            const config = browseDefListRD.payload.page.find((definition: BrowseDefinition) => definition.id === id);
+            return config ? [{
+              id: `browse_${config.id}`,
+              label: `browse.comcol.by.${config.id}`,
+              routerLink: `${comColRoute}/browse/${config.id}`,
+            }] : [];
+          }));
         }
         return allOptions;
       }),

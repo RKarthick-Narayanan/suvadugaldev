@@ -26,3 +26,15 @@
   }
 
 }
+
+:host img#header-logo { width: auto; height: 64px; max-width: 110px; object-fit: contain; }
+:host {
+  --ds-header-bg: #fff;
+  --ds-header-icon-color: #1a1a1a;
+  --ds-header-icon-color-hover: #51483d;
+  --ds-navbar-link-color: #1a1a1a;
+  --ds-navbar-link-color-hover: #51483d;
+  --ds-header-height: 75px;
+  font-family: Roboto, sans-serif;
+}
+:host ::ng-deep .btn-link { color: #1a1a1a; }

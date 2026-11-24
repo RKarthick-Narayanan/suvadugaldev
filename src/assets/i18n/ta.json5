@@ -1,4 +1,49 @@
 {
+  "suvadugal.card.entity.space": "நிகழ்விடம்",
+  "suvadugal.card.entity.performance": "நிகழ்வு",
+  "suvadugal.card.entity.instrument": "இசைக்கருவி",
+  "suvadugal.card.entity.artist": "கலைஞர் விவரம்",
+  "suvadugal.card.entity.artform": "கலை வடிவம்",
+  "suvadugal.card.view": "பதிவைக் காண்க",
+  "suvadugal.card.noimage": "படம் கிடைக்கவில்லை",
+  "suvadugal.home.recent.subtitle": "அண்மையில் ஆவணப்படுத்தப்பட்ட உள்ளடக்கமும் பண்பாடும்",
+  "suvadugal.home.domain.description": "நிகழ்த்துக் கலை மரபுகளையும் கலைப் பயிற்சிகளையும் கண்டறியுங்கள்.",
+  "suvadugal.home.recent.title": "அண்மையில் சேர்க்கப்பட்டவை",
+  "suvadugal.footer.about": "பற்றி",
+  "suvadugal.footer.information": "தகவல் மற்றும் கொள்கைகள்",
+  "suvadugal.footer.contact": "தொடர்பு",
+  "suvadugal.footer.links": "முக்கிய இணைப்புகள்",
+  "suvadugal.footer.social": "சமூக நீதித் துறை, தமிழ்நாடு அரசு",
+  "suvadugal.footer.tribal": "பழங்குடியினர் நல இயக்ககம், தமிழ்நாடு அரசு",
+  "suvadugal.footer.ministry": "பழங்குடியினர் நல அமைச்சகம், இந்திய அரசு",
+
+  "suvadugal.home.recent.empty": "அண்மையில் சேர்க்கப்பட்ட பதிவுகள் இல்லை.",
+  "suvadugal.hero.label": "கலை மரபுப் படத்தொகுப்பு",
+  "suvadugal.hero.previous": "முந்தைய படம்",
+  "suvadugal.hero.next": "அடுத்த படம்",
+  "suvadugal.hero.pause": "நிறுத்து",
+  "suvadugal.hero.play": "இயக்கு",
+  "suvadugal.hero.slide": "படம் {{number}} / 4",
+  "suvadugal.hero.image.1": "மரபுக் கலைஞர்களும் இசைக்கலைஞர்களும்",
+  "suvadugal.hero.image.2": "மரபு உடையில் கலைஞர்கள்",
+  "suvadugal.hero.image.3": "நடனக் கலைஞர்களும் கலைஞர்களும்",
+  "suvadugal.hero.image.4": "மரபு இசைக்கலைஞர்களும் நடனக் கலைஞர்களும்",
+
+  "suvadugal.home.title": "தமிழ்நாட்டின் கலை மரபைக் கண்டறியுங்கள்",
+  "suvadugal.home.entities": "காப்பகத்தை ஆராயுங்கள்",
+  "suvadugal.home.entities.description": "கலை வடிவங்கள், கலைஞர் விவரங்கள் மற்றும் இசைக்கருவிகளை ஆராயுங்கள்.",
+  "suvadugal.home.entity.artform": "கலை வடிவங்களை ஆராயுங்கள்",
+  "suvadugal.home.entity.artform.description": "நிகழ்த்துக் கலை மரபுகளையும் கலைப் பயிற்சிகளையும் கண்டறியுங்கள்.",
+  "suvadugal.home.entity.artist": "கலைஞர் விவரங்களை ஆராயுங்கள்",
+  "suvadugal.home.entity.artist.description": "கலைஞர்கள், நிகழ்த்துநர்கள் மற்றும் பண்பாட்டு அறிவைக் கொண்டவர்களைக் கண்டறியுங்கள்.",
+  "suvadugal.home.entity.instrument": "இசைக்கருவிகளை ஆராயுங்கள்",
+  "suvadugal.home.entity.instrument.description": "மரபு இசைக்கருவிகளையும் அவற்றின் பயன்பாட்டுச் சூழல்களையும் ஆராயுங்கள்.",
+  "suvadugal.home.domains": "கலைப் பிரிவுகள்",
+  "suvadugal.home.domains.description": "காப்பகத்தில் உள்ள கலைப் பிரிவுகளை ஆராயுங்கள்.",
+  "suvadugal.home.domain.performing": "நிகழ்த்துக் கலைகள்",
+  "suvadugal.home.domain.fine": "கவின் கலைகள்",
+  "suvadugal.home.domain.martial": "தற்காப்புக் கலைகள்",
+
   // "401.help": "You're not authorized to access this page. You can use the button below to get back to the home page.",
   "401.help": "இந்தப் பக்கத்தை அணுக உங்களுக்கு அனுமதி இல்லை. கீழே உள்ள பொத்தானைப் பயன்படுத்தி முகப்புப் பக்கத்திற்கு திரும்பலாம்.",
 
@@ -48,8 +93,7 @@
   "error-page.description.404": "பக்கம் கிடைக்கவில்லை",
 
   // "error-page.orcid.generic-error": "An error occurred during login via ORCID. Make sure you have shared your ORCID account email address with DSpace. If the error persists, contact the administrator",
-  "error-page.orcid.generic-error": "ORCID மூலம் உள்நுழைவின் போது ஒரு பிழை ஏற்பட்டது. உங்கள் ORCID கணக்கு மின்னஞ்சல் முகவரியை DSpace உடன் பகிர்ந்துள்ளீர்கள் என்பதை உறுதிப்படுத்துங்கள். பிழை தொடர்ந்தால், நிர்வாகியை தொடர்பு கொள்ளுங்கள்",
-
+  "error-page.orcid.generic-error": "ORCID மூலம் உள்நுழைவின் போது ஒரு பிழை ஏற்பட்டது. உங்கள் ORCID கணக்கு மின்னஞ்சல் முகவரியை சுவடுகள் உடன் பகிர்ந்துள்ளீர்கள் என்பதை உறுதிப்படுத்துங்கள். பிழை தொடர்ந்தால், நிர்வாகியை தொடர்பு கொள்ளுங்கள்",
   // "listelement.badge.access-status": "Access status:",
   // TODO New key - Add a translation
   "listelement.badge.access-status": "Access status:",
@@ -1703,6 +1747,10 @@
 
   // "browse.comcol.by.author": "By Author",
   "browse.comcol.by.author": "ஆசிரியர் மூலம்",
+  "browse.comcol.by.artist": "கலைஞர்",
+  "browse.comcol.by.instrument": "இசைக்கருவி",
+  "browse.comcol.by.performance": "நிகழ்வு",
+  "browse.comcol.by.artform": "கலை வடிவம்",
 
   // "browse.comcol.by.dateissued": "By Issue Date",
   "browse.comcol.by.dateissued": "வெளியீட்டு தேதி மூலம்",
@@ -2939,8 +2987,7 @@
   "dso-selector.set-scope.community.head": "தேடல் பரப்பைத் தேர்ந்தெடுக்கவும்",
 
   // "dso-selector.set-scope.community.button": "Search all of DSpace",
-  "dso-selector.set-scope.community.button": "DSpace முழுவதையும் தேடுங்கள்",
-
+  "dso-selector.set-scope.community.button": "சுவடுகள் முழுவதையும் தேடுங்கள்",
   // "dso-selector.set-scope.community.or-divider": "or",
   "dso-selector.set-scope.community.or-divider": "அல்லது",
 
@@ -3695,8 +3742,7 @@
   "home.title": "முகப்பு",
 
   // "home.top-level-communities.head": "Communities in DSpace",
-  "home.top-level-communities.head": "DSpace இல் உள்ள சமூகங்கள்",
-
+  "home.top-level-communities.head": "சுவடுகள் இல் உள்ள சமூகங்கள்",
   // "home.top-level-communities.help": "Select a community to browse its collections.",
   "home.top-level-communities.help": "அதன் சேகரிப்புகளை உலாவ ஒரு சமூகத்தைத் தேர்ந்தெடுக்கவும்.",
 
@@ -3822,8 +3868,7 @@
   "info.feedback.title": "கருத்து",
 
   // "info.feedback.info": "Thanks for sharing your feedback about the DSpace system. Your comments are appreciated!",
-  "info.feedback.info": "DSpace அமைப்பு பற்றிய உங்கள் கருத்துகளைப் பகிர்ந்ததற்கு நன்றி. உங்கள் கருத்துக்கள் பாராட்டப்படுகின்றன!",
-
+  "info.feedback.info": "சுவடுகள் அமைப்பு பற்றிய உங்கள் கருத்துகளைப் பகிர்ந்ததற்கு நன்றி. உங்கள் கருத்துக்கள் பாராட்டப்படுகின்றன!",
   // "info.feedback.email_help": "This address will be used to follow up on your feedback.",
   "info.feedback.email_help": "உங்கள் கருத்துக்களைத் தொடர இந்த முகவரி பயன்படுத்தப்படும்.",
 
@@ -4718,6 +4763,11 @@
   // "item.page.titleprefix": "Item: ",
   // TODO New key - Add a translation
   "item.page.titleprefix": "Item: ",
+  "artform.page.titleprefix": "கலை வடிவம்: ",
+  "artistprofile.page.titleprefix": "கலைஞர் அறிமுகம்: ",
+  "instrument.page.titleprefix": "இசைக்கருவி: ",
+  "performance.page.titleprefix": "கலை நிகழ்வு: ",
+  "space.page.titleprefix": "பண்பாட்டு வெளி: ",
 
   // "item.page.volume-title": "Volume Title",
   "item.page.volume-title": "தொகுப்பு தலைப்பு",
@@ -5727,8 +5777,7 @@
   "login.form.forgot-password": "உங்கள் கடவுச்சொல்லை மறந்துவிட்டீர்களா?",
 
   // "login.form.header": "Please log in to DSpace",
-  "login.form.header": "தயவுசெய்து DSpace இல் உள்நுழையவும்",
-
+  "login.form.header": "தயவுசெய்து சுவடுகள் இல் உள்நுழையவும்",
   // "login.form.new-user": "New user? Click here to register.",
   "login.form.new-user": "புதிய பயனர்? பதிவு செய்ய இங்கே கிளிக் செய்யவும்.",
 
@@ -5757,8 +5806,7 @@
   "login.breadcrumbs": "உள்நுழைவு",
 
   // "logout.form.header": "Log out from DSpace",
-  "logout.form.header": "DSpace இலிருந்து வெளியேறு",
-
+  "logout.form.header": "சுவடுகள் இலிருந்து வெளியேறு",
   // "logout.form.submit": "Log out",
   "logout.form.submit": "வெளியேறு",
 
@@ -5821,7 +5869,22 @@
   "menu.section.browse_community_by_title": "தலைப்பால்",
 
   // "menu.section.browse_global": "All of DSpace",
-  "menu.section.browse_global": "DSpace முழுவதும்",
+  "menu.section.browse_global": "சுவடுகள் முழுவதும்",
+  "menu.section.browse_global_by_artform": "கலை வடிவங்கள்",
+
+  "menu.section.browse_global_by_artist": "கலைஞர்கள்",
+
+  "menu.section.browse_global_by_instrument": "இசைக்கருவிகள்",
+
+  "menu.section.browse_global_by_performance": "நிகழ்வுகள்",
+
+  "menu.section.browse_global_by_eventspace": "நிகழ்விடங்கள்",
+
+  "menu.section.browse_global_by_subclass": "கலை வடிவ வகைகள்",
+
+  "menu.section.browse_global_by_ptype": "கலைஞர் வகைகள்",
+
+  "menu.section.browse_global_by_itype": "இசைக்கருவி வகைகள்",
 
   // "menu.section.browse_global_by_author": "By Author",
   "menu.section.browse_global_by_author": "ஆசிரியர் மூலம்",
@@ -6054,8 +6117,7 @@
   "metadata.security.level.title": "Metatada security level {{level}}",
 
   // "mydspace.breadcrumbs": "MyDSpace",
-  "mydspace.breadcrumbs": "எனது DSpace",
-
+  "mydspace.breadcrumbs": "எனது சுவடுகள்",
   // "mydspace.description": "",
   "mydspace.description": "",
 
@@ -6135,8 +6197,7 @@
   "mydspace.results.no-uri": "URI இல்லை",
 
   // "mydspace.search-form.placeholder": "Search in MyDSpace...",
-  "mydspace.search-form.placeholder": "எனது DSpace இல் தேடுங்கள்...",
-
+  "mydspace.search-form.placeholder": "எனது சுவடுகள் இல் தேடுங்கள்...",
   // "mydspace.show.workflow": "Workflow tasks",
   "mydspace.show.workflow": "வேலைநிலை பணிகள்",
 
@@ -6152,8 +6213,7 @@
 
   // "mydspace.status": "My DSpace status:",
   // TODO New key - Add a translation
-  "mydspace.status": "My DSpace status:",
-
+  "mydspace.status": "எனது சுவடுகள் நிலை:",
   // "mydspace.status.mydspaceArchived": "Archived",
   "mydspace.status.mydspaceArchived": "காப்பகப்படுத்தப்பட்டது",
 
@@ -6170,8 +6230,7 @@
   "mydspace.status.mydspaceWorkspace": "வேலைப்பதிவு",
 
   // "mydspace.title": "MyDSpace",
-  "mydspace.title": "எனது DSpace",
-
+  "mydspace.title": "எனது சுவடுகள்",
   // "mydspace.upload.upload-failed": "Error creating new workspace. Please verify the content uploaded before retry.",
   "mydspace.upload.upload-failed": "புதிய வேலைப்பதிவை உருவாக்கும் போது பிழை. மீண்டும் முயற்சிக்கும் முன் பதிவேற்றிய உள்ளடக்கத்தை சரிபார்க்கவும்.",
 
@@ -6200,8 +6259,7 @@
   "notification.suggestion.please": "தயவுசெய்து",
 
   // "nav.browse.header": "All of DSpace",
-  "nav.browse.header": "DSpace முழுவதும்",
-
+  "nav.browse.header": "சுவடுகள் முழுவதும்",
   // "nav.community-browse.header": "By Community",
   "nav.community-browse.header": "சமூகத்தின் அடிப்படையில்",
 
@@ -6224,8 +6282,7 @@
   "nav.main.description": "முதன்மை வழிசெலுத்தல் பட்டை",
 
   // "nav.mydspace": "MyDSpace",
-  "nav.mydspace": "எனது DSpace",
-
+  "nav.mydspace": "எனது சுவடுகள்",
   // "nav.profile": "Profile",
   "nav.profile": "சுயவிவரம்",
 
@@ -6429,8 +6486,7 @@
   "quality-assurance.event.reject.description": "இந்த செயலை மீட்டமைக்க முடியாது. இந்த பரிந்துரையை நிராகரிக்க விரும்புகிறீர்களா?",
 
   // "quality-assurance.event.accept.description": "No DSpace project selected. A new project will be created based on the suggestion data.",
-  "quality-assurance.event.accept.description": "DSpace திட்டம் எதுவும் தேர்ந்தெடுக்கப்படவில்லை. பரிந்துரை தரவின் அடிப்படையில் புதிய திட்டம் உருவாக்கப்படும்.",
-
+  "quality-assurance.event.accept.description": "சுவடுகள் திட்டம் எதுவும் தேர்ந்தெடுக்கப்படவில்லை. பரிந்துரை தரவின் அடிப்படையில் புதிய திட்டம் உருவாக்கப்படும்.",
   // "quality-assurance.event.action.cancel": "Cancel",
   "quality-assurance.event.action.cancel": "ரத்து செய்",
 
@@ -7192,8 +7248,7 @@
   "register-page.registration.header": "புதிய பயனர் பதிவு",
 
   // "register-page.registration.info": "Register an account to subscribe to collections for email updates, and submit new items to DSpace.",
-  "register-page.registration.info": "மின்னஞ்சல் புதுப்பிப்புகளுக்கான சேமிப்புகளுக்கு சந்தா செய்ய, மற்றும் புதிய உருப்படிகளை DSpace க்கு சமர்ப்பிக்க ஒரு கணக்கை பதிவு செய்யவும்.",
-
+  "register-page.registration.info": "மின்னஞ்சல் புதுப்பிப்புகளுக்கான சேமிப்புகளுக்கு சந்தா செய்ய, மற்றும் புதிய உருப்படிகளை சுவடுகள் க்கு சமர்ப்பிக்க ஒரு கணக்கை பதிவு செய்யவும்.",
   // "register-page.registration.email": "Email Address *",
   "register-page.registration.email": "மின்னஞ்சல் முகவரி *",
 
@@ -7367,12 +7422,10 @@
   "repository.image.logo": "சேமிப்பகத்தின் லோகோ",
 
   // "repository.title": "DSpace Repository",
-  "repository.title": "DSpace சேமிப்பகம்",
-
+  "repository.title": "சுவடுகள் சேமிப்பகம்",
   // "repository.title.prefix": "DSpace Repository :: ",
   // TODO New key - Add a translation
-  "repository.title.prefix": "DSpace Repository :: ",
-
+  "repository.title.prefix": "சுவடுகள் களஞ்சியம் :: ",
   // "resource-policies.add.button": "Add",
   "resource-policies.add.button": "சேர்",
 
@@ -8081,8 +8134,7 @@
   "search.form.search_dspace": "அனைத்து சேமிப்பகம்",
 
   // "search.form.scope.all": "All of DSpace",
-  "search.form.scope.all": "DSpace முழுவதும்",
-
+  "search.form.scope.all": "சுவடுகள் முழுவதும்",
   // "search.results.head": "Search Results",
   "search.results.head": "தேடல் முடிவுகள்",
 
@@ -8350,11 +8402,9 @@
   "submission.import-external.title.none": "வெளியக மூலத்திலிருந்து மெட்டாடேட்டாவை இறக்குமதி செய்",
 
   // "submission.import-external.page.hint": "Enter a query above to find items from the web to import in to DSpace.",
-  "submission.import-external.page.hint": "DSpace க்கு இறக்குமதி செய்ய இணையத்தில் இருந்து உருப்படிகளை கண்டறிய மேலே ஒரு வினாவை உள்ளிடவும்.",
-
+  "submission.import-external.page.hint": "சுவடுகள் க்கு இறக்குமதி செய்ய இணையத்தில் இருந்து உருப்படிகளை கண்டறிய மேலே ஒரு வினாவை உள்ளிடவும்.",
   // "submission.import-external.back-to-my-dspace": "Back to MyDSpace",
-  "submission.import-external.back-to-my-dspace": "என் DSpace க்கு திரும்பு",
-
+  "submission.import-external.back-to-my-dspace": "என் சுவடுகள் க்கு திரும்பு",
   // "submission.import-external.search.placeholder": "Search the external source",
   "submission.import-external.search.placeholder": "வெளியக மூலத்தைத் தேடுங்கள்",
 
@@ -9839,8 +9889,7 @@
   "thumbnail.person.placeholder": "சுயவிவர படம் கிடைக்கவில்லை",
 
   // "title": "DSpace",
-  "title": "DSpace",
-
+  "title": "சுவடுகள்",
   // "vocabulary-treeview.header": "Hierarchical tree view",
   "vocabulary-treeview.header": "அடுக்கு மர காட்சி",
 

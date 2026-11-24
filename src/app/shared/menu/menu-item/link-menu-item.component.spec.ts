@@ -87,4 +87,13 @@ describe('LinkMenuItemComponent', () => {
     expect(routerParamsQuery.length).toBe(1);
     expect(routerParamsQuery[0].queryParams).toBe(queryParams);
   });
+
+  it('preserves query parameters on keyboard activation', () => {
+    const navigate = TestBed.inject(Router).navigate as jasmine.Spy;
+    const event = new KeyboardEvent('keydown', { key: 'Enter', cancelable: true });
+
+    debugElement.query(By.css('a')).triggerEventHandler('keydown.enter', event);
+
+    expect(navigate).toHaveBeenCalledOnceWith([link], { queryParams });
+  });
 });

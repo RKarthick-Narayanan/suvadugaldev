@@ -1,0 +1,51 @@
+:host {
+  display: block;
+  color: #1e1916;
+}
+.archive-search, .browse-section {
+  padding: 60px 48px 80px;
+  text-align: center;
+}
+.archive-search h1, .browse-section h2, .browse-card__title {
+  font-family: "Playfair Display", Georgia, "Noto Serif Tamil", serif;
+}
+.archive-search h1 { font-size: clamp(2rem, 3.33vw, 3rem); }
+.archive-search__form { max-width: 644px; margin: 48px auto 0; text-align: start; }
+.browse-section h2 { font-size: 2.25rem; }
+.browse-section > p { color: #726c60; margin-bottom: 56px; }
+.browse-section--domains { background: #fdfdfc; }
+.browse-grid { max-width: 1344px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; }
+.browse-card { --accent: #d8d6fd; display: block; padding-right: 12%; padding-bottom: 0; color: inherit; text-align: start; text-decoration: none; background: linear-gradient(to right, transparent 80%, var(--accent) 80%) bottom / 100% 89.5% no-repeat; }
+.browse-card--artist { --accent: #f3d0fe; }
+.browse-card--instrument { --accent: #ace0fe; }
+.browse-card--performing { --accent: #a0b6cd; }
+.browse-card--fine { --accent: #f3a59e; }
+.browse-card--martial { --accent: #b6b683; }
+.browse-card__body { min-height: 458px; display: flex; flex-direction: column; align-items: flex-start; gap: 24px; background: white; border: .5px solid #ccc; padding: 48px 32px 32px; }
+.browse-card__title { font-size: 2rem; line-height: 1.2; }
+.browse-card__description { color: #726c60; }
+.browse-card__arrow { align-self: flex-end; margin-top: auto; font-size: 1.5rem; }
+.browse-card:focus-visible { outline: 3px solid #005a8b; outline-offset: 4px; }
+@media (max-width: 991px) { .browse-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 575px) {
+  .archive-search, .browse-section { padding: 40px 20px 48px; }
+  .browse-grid { grid-template-columns: 1fr; gap: 24px; }
+  .browse-card__body { min-height: 280px; padding: 32px 24px; }
+  .browse-card__title { font-size: 1.6rem; }
+}
+
+.hero__image { display: block; width: 100%; height: auto; aspect-ratio: 3.2; }
+.hero__controls { display: flex; justify-content: center; align-items: center; gap: .5rem; padding: .5rem; }
+.hero__controls button { min-width: 44px; min-height: 44px; border: 1px solid #726c60; background: white; color: #1e1916; }
+.hero__controls button[aria-current="true"] { background: #1e1916; color: white; }
+.hero__controls button:focus-visible { outline: 3px solid #005a8b; outline-offset: 3px; }
+.archive-search__form ::ng-deep .input-group { border: 1px solid #ccc; background: white; border-radius: 2px; flex-wrap: nowrap; }
+.archive-search__form ::ng-deep input { border: 0; min-height: 60px; box-shadow: none; font: 400 16px Roboto, sans-serif; }
+.archive-search__form ::ng-deep .search-button { background: white; border: 0; color: #726c60; font-size: 0; min-width: 60px; }
+.archive-search__form ::ng-deep .search-button i { font-size: 18px; }
+.archive-search__form ::ng-deep .search-button:focus-visible { outline: 3px solid #005a8b; outline-offset: -3px; }
+.hero__controls button { border: 0; min-width: 32px; min-height: 44px; color: #726c60; background: transparent; }
+.hero__controls button[aria-current="true"] { color: #1e1916; background: transparent; }
+.hero__controls .hero__indicator { font-size: 0; position: relative; }
+.hero__controls .hero__indicator::after { content: ''; display: block; width: 8px; height: 8px; border-radius: 50%; background: #bcb7ae; margin: auto; }
+.hero__controls button[aria-current="true"]::after { background: #1e1916; }

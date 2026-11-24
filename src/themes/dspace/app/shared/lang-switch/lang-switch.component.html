@@ -1,0 +1,10 @@
+@if (moreThanOneLanguage) {
+  <div class="languages" role="group" [attr.aria-label]="'nav.language' | translate">
+    @for (language of activeLangs; track language.code) {
+      @if (language.code === 'en' || language.code === 'ta') {
+        <button type="button" [attr.lang]="language.code" [attr.aria-pressed]="language.code === translate.getCurrentLang()"
+          (click)="useLang(language.code)">{{ language.code === 'en' ? 'EN' : 'தமிழ்' }}</button>
+      }
+    }
+  </div>
+}

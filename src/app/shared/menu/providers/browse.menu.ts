@@ -6,42 +6,29 @@
  * http://www.dspace.org/license/
  */
 
-import {
-  Inject,
-  Injectable,
-} from '@angular/core';
-import {
-  APP_CONFIG,
-  AppConfig,
-} from '@dspace/config/app-config.interface';
-import { BrowseService } from '@dspace/core/browse/browse.service';
-import { PaginatedList } from '@dspace/core/data/paginated-list.model';
-import { RemoteData } from '@dspace/core/data/remote-data';
-import { BrowseDefinition } from '@dspace/core/shared/browse-definition.model';
-import { getFirstSucceededRemoteData } from '@dspace/core/shared/operators';
+import { Injectable } from '@angular/core';
 import {
   Observable,
   of,
 } from 'rxjs';
-import { map } from 'rxjs/operators';
 
 import { TextMenuItemModel } from '../menu-item/models/text.model';
 import { MenuItemType } from '../menu-item-type.model';
 import { PartialMenuSection } from '../menu-provider.model';
 import { AbstractExpandableMenuProvider } from './helper-providers/expandable-menu-provider';
 
+const SUVADUGAL_ENTITIES = [
+  { label: 'artform', type: 'ArtForm' },
+  { label: 'artist', type: 'ArtistProfile' },
+  { label: 'instrument', type: 'Instrument' },
+  { label: 'performance', type: 'Performance' },
+];
+
 /**
  * Menu provider to create the "All of DSpace" browse menu sections in the public navbar
  */
 @Injectable()
 export class BrowseMenuProvider extends AbstractExpandableMenuProvider {
-  constructor(
-    @Inject(APP_CONFIG) protected appConfig: AppConfig,
-    protected browseService: BrowseService,
-  ) {
-    super();
-  }
-
   getTopSection(): Observable<PartialMenuSection> {
     return of(
       {
@@ -55,34 +42,15 @@ export class BrowseMenuProvider extends AbstractExpandableMenuProvider {
     );
   }
 
-  /**
-   * Retrieves subsections by fetching the browse definitions from the backend and mapping them to partial menu sections.
-   */
   getSubSections(): Observable<PartialMenuSection[]> {
-    return this.browseService.getBrowseDefinitions().pipe(
-      getFirstSucceededRemoteData(),
-      map((rd: RemoteData<PaginatedList<BrowseDefinition>>) => {
-        return [
-          ...rd.payload.page.map((browseDef) => {
-            return {
-              visible: true,
-              model: {
-                type: MenuItemType.LINK,
-                text: `menu.section.browse_global_by_${browseDef.id}`,
-                link: `/browse/${browseDef.id}`,
-              },
-            };
-          }),
-          {
-            visible: this.appConfig.geospatialMapViewer.enableBrowseMap,
-            model: {
-              type: MenuItemType.LINK,
-              text: `menu.section.browse_global_geospatial_map`,
-              link: `/browse/map`,
-            },
-          },
-        ];
-      }),
-    );
+    return of(SUVADUGAL_ENTITIES.map(({ label, type }) => ({
+      visible: true,
+      model: {
+        type: MenuItemType.LINK,
+        text: `menu.section.browse_global_by_${label}`,
+        link: '/search',
+        queryParams: { 'f.entityType': `${type},equals` },
+      },
+    })));
   }
 }
