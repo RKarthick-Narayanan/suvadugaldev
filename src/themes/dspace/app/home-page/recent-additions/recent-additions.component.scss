@@ -18,3 +18,7 @@ h2 { font-family: "Playfair Display", Georgia, "Noto Serif Tamil", serif; font-s
 .recent-card__access { color: #116a38; background: #ebf7ee; }
 .recent-card__view { margin-top: auto; display: block; width: 100%; text-align: center; color: #1a1a1a; border: 1px solid #726c60; padding: 10px; text-decoration: none; }
 .recent-card__view:focus-visible { outline: 3px solid #005a8b; outline-offset: 3px; }
+@media (max-width: 575px) {
+  h2 { font-size: clamp(1.65rem, 7vw, 2rem); line-height: 1.3; }
+  .recent-card h3 { display: block; overflow: visible; overflow-wrap: break-word; -webkit-line-clamp: unset; }
+}

@@ -36,3 +36,39 @@
   font-weight: 400;
   font-display: swap;
 }
+
+// Supply Tamil glyphs within the existing Latin families, including mixed-language metadata.
+@each $family in (Roboto, Nunito) {
+  @font-face {
+    font-family: $family;
+    src: url('/assets/dspace/fonts/NotoSansTamil-Regular.ttf') format('truetype');
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    unicode-range: U+0B80-0BFF, U+200C-200D, U+25CC;
+  }
+  @font-face {
+    font-family: $family;
+    src: url('/assets/dspace/fonts/NotoSansTamil-Bold.ttf') format('truetype');
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    unicode-range: U+0B80-0BFF, U+200C-200D, U+25CC;
+  }
+}
+@font-face {
+  font-family: 'Playfair Display';
+  src: url('/assets/dspace/fonts/NotoSerifTamil-Regular.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 400 500;
+  font-display: swap;
+  unicode-range: U+0B80-0BFF, U+200C-200D, U+25CC;
+}
+@font-face {
+  font-family: 'Playfair Display';
+  src: url('/assets/dspace/fonts/NotoSerifTamil-Bold.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 600 900;
+  font-display: swap;
+  unicode-range: U+0B80-0BFF, U+200C-200D, U+25CC;
+}

@@ -38,3 +38,21 @@
   font-family: Roboto, sans-serif;
 }
 :host ::ng-deep .btn-link { color: #1a1a1a; }
+:host #header-left { flex: 1 1 auto; min-width: 0; }
+:host #header-right { flex: 0 0 auto; }
+
+@media (max-width: 767.98px) {
+  :host #main-site-header-container { height: auto; }
+  :host #header-left { flex: 0 0 auto; }
+  :host #header-right { flex: 1 1 0; min-width: 0; }
+  :host .header-toolbar { flex: 1 1 0; flex-wrap: wrap; justify-content: flex-end; min-width: 0; }
+  :host ds-search-navbar { align-self: flex-start; }
+  :host #mobile-navbar-toggler { flex: 0 0 auto; margin-inline-start: .25rem; }
+  :host #navbar-toggler { min-width: 44px; min-height: 44px; }
+  :host ::ng-deep ds-search-navbar .submit-icon { min-width: 44px; min-height: 44px; }
+}
+
+@media (max-width: 575.98px) {
+  :host img#header-logo { height: 44px; }
+  :host #mobile-navbar-toggler { margin-inline-start: 0; }
+}
