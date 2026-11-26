@@ -18,6 +18,7 @@ import { Operation } from 'fast-json-patch';
 import {
   Observable,
   of,
+  throwError,
 } from 'rxjs';
 import {
   distinctUntilChanged,
@@ -33,7 +34,10 @@ import { BrowseService } from '../browse/browse.service';
 import { RemoteDataBuildService } from '../cache/builders/remote-data-build.service';
 import { RequestParam } from '../cache/models/request-param.model';
 import { ObjectCacheService } from '../cache/object-cache.service';
-import { HttpOptions } from '../dspace-rest/dspace-rest.service';
+import {
+  DspaceRestService,
+  HttpOptions,
+} from '../dspace-rest/dspace-rest.service';
 import { NotificationsService } from '../notification-system/notifications.service';
 import { Bundle } from '../shared/bundle.model';
 import { Collection } from '../shared/collection.model';
@@ -42,7 +46,10 @@ import { FollowLinkConfig } from '../shared/follow-link-config.model';
 import { GenericConstructor } from '../shared/generic-constructor';
 import { HALEndpointService } from '../shared/hal-endpoint.service';
 import { Item } from '../shared/item.model';
-import { MetadataMap } from '../shared/metadata.models';
+import {
+  MetadataMap,
+  MetadataMapSerializer,
+} from '../shared/metadata.models';
 import { NoContent } from '../shared/NoContent.model';
 import { sendRequest } from '../shared/request.operators';
 import { PaginatedSearchOptions } from '../shared/search/models/paginated-search-options.model';
@@ -615,7 +622,42 @@ export class ItemDataService extends BaseItemDataService {
     protected comparator: DSOChangeAnalyzer<Item>,
     protected browseService: BrowseService,
     protected bundleService: BundleDataService,
+    protected restService: DspaceRestService,
   ) {
     super('items', requestService, rdbService, objectCache, halService, notificationsService, comparator, browseService, bundleService);
+  }
+
+  /** Retrieve an authorized metadata projection without entering the shared object cache. */
+  getAllLanguagesMetadata(item: Item, options: { forEditing?: boolean } = {}): Observable<MetadataMap> {
+    const href = item?._links?.self?.href;
+    if (!href) {
+      return throwError(() => new Error('Item has no canonical REST URL'));
+    }
+    const url = new URL(href);
+    url.searchParams.set('projection', 'allLanguages');
+    return this.restService.get(url.toString()).pipe(map((response) => {
+      const metadata = response?.payload?.metadata;
+      if (!metadata || typeof metadata !== 'object' || Array.isArray(metadata) ||
+        Object.values(metadata).some((values) => !Array.isArray(values) || values.some((value) => !value || typeof value.value !== 'string'))) {
+        throw new Error('Invalid multilingual metadata response');
+      }
+      if (options.forEditing) {
+        for (const [field, values] of Object.entries(metadata) as [string, MetadataMap[string]][]) {
+          // The existing PATCH builder addresses values by their zero-based position.
+          // Sparse or duplicate positions cannot safely be edited by that builder.
+          if (!/^[^./~]+\.[^./~]+(?:\.[^./~]+)?$/.test(field) ||
+              new Set(values.map((value) => value.place)).size !== values.length ||
+              values.some((value) =>
+                !Number.isSafeInteger(value.place) || value.place < 0 || value.place >= values.length ||
+                (value.language !== null && typeof value.language !== 'string') ||
+                (value.authority !== null && typeof value.authority !== 'string') ||
+                !Number.isSafeInteger(value.confidence) ||
+                (hasValue(value.securityLevel) && !Number.isSafeInteger(value.securityLevel)))) {
+            throw new Error('Metadata projection cannot safely be edited');
+          }
+        }
+      }
+      return MetadataMapSerializer.Deserialize(metadata);
+    }));
   }
 }

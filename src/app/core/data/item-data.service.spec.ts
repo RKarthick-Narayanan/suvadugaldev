@@ -96,11 +96,71 @@ describe('ItemDataService', () => {
       comparator,
       browseService,
       bundleService,
+      null,
     );
   }
 
+  describe('isolated multilingual metadata', () => {
+    const href = 'https://rest.api/core/items/123';
+    const item = Object.assign(new Item(), { _links: { self: { href } } });
+    const metadata = { 'dc.title': [
+      { value: 'English', language: 'en', place: 0, authority: 'key', confidence: 600, securityLevel: 0 },
+      { value: 'தமிழ்', language: 'ta', place: 1 },
+      { value: 'Neutral', language: null, place: 2 },
+    ] };
+
+    it('requests the projection and returns detached metadata with its attributes', () => {
+      const rest = jasmine.createSpyObj('rest', { get: of({ payload: { metadata } }) });
+      const instance = new ItemDataService(null, null, null, null, null, null, null, null, rest);
+      instance.getAllLanguagesMetadata(item).subscribe((result) => {
+        expect(result['dc.title'].map((value) => value.value)).toEqual(['English', 'தமிழ்', 'Neutral']);
+        expect(result['dc.title'][0].authority).toBe('key');
+        expect(result['dc.title'][0].confidence).toBe(600);
+        expect(result['dc.title'][0].securityLevel).toBe(0);
+        expect(result['dc.title'][1].place).toBe(1);
+        expect(Object.is(result, metadata)).toBeFalse();
+      });
+      expect(rest.get).toHaveBeenCalledWith(href + '?projection=allLanguages');
+    });
+
+    it('preserves edit attributes and a null language without rewriting positions', () => {
+      const first = metadata['dc.title'][0];
+      const values = [{ ...first, value: 'தமிழ்', language: 'ta', place: 1 }, first,
+        { value: 'Neutral', language: null, place: 2, authority: null, confidence: -1 }];
+      const rest = jasmine.createSpyObj('rest', { get: of({ payload: { metadata: { 'dc.title': values } } }) });
+      const instance = new ItemDataService(null, null, null, null, null, null, null, null, rest);
+      instance.getAllLanguagesMetadata(item, { forEditing: true }).subscribe((result) => {
+        expect(result['dc.title'].map(({ language, place }) => [language, place])).toEqual([['ta', 1], ['en', 0], [null, 2]]);
+        expect(result['dc.title'][1].securityLevel).toBe(0);
+        expect(result['dc.title'][2].securityLevel).toBeUndefined();
+      });
+    });
+
+    for (const attributes of [
+      { place: 2 }, { place: -1 }, { language: 23 }, { authority: {} },
+      { confidence: null }, { securityLevel: '0' },
+    ]) {
+      it(`rejects unsafe edit metadata with attributes ${JSON.stringify(attributes)}`, () => {
+        const values = [{ ...metadata['dc.title'][0], ...attributes }];
+        const rest = jasmine.createSpyObj('rest', { get: of({ payload: { metadata: { 'dc.title': values } } }) });
+        const instance = new ItemDataService(null, null, null, null, null, null, null, null, rest);
+        const error = jasmine.createSpy('error');
+        instance.getAllLanguagesMetadata(item, { forEditing: true }).subscribe({ error });
+        expect(error).toHaveBeenCalled();
+      });
+    }
+
+    it('rejects malformed metadata', () => {
+      const rest = jasmine.createSpyObj('rest', { get: of({ payload: {} }) });
+      const instance = new ItemDataService(null, null, null, null, null, null, null, null, rest);
+      let failed = false;
+      instance.getAllLanguagesMetadata(item).subscribe({ error: () => failed = true });
+      expect(failed).toBeTrue();
+    });
+  });
+
   describe('composition', () => {
-    const initService = () => new ItemDataService(null, null, null, null, null, null, null, null);
+    const initService = () => new ItemDataService(null, null, null, null, null, null, null, null, null);
     testCreateDataImplementation(initService);
     testPatchDataImplementation(initService);
     testDeleteDataImplementation(initService);
@@ -233,6 +293,7 @@ describe('ItemDataService', () => {
         comparator,
         browseService,
         bundleService,
+        null,
       );
 
       (itemDataService as any).searchData = searchData;
@@ -275,6 +336,7 @@ describe('ItemDataService', () => {
         comparator,
         browseService,
         bundleService,
+        null,
       );
       spyOn(itemDataService, 'findByCustomUrl').and.returnValue(createSuccessfulRemoteDataObject$(new Item()));
       spyOn(itemDataService, 'findByHref').and.returnValue(createSuccessfulRemoteDataObject$(new Item()));

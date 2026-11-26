@@ -1,4 +1,5 @@
-<div class="container" *ngVar="(itemRD$ | async) as itemRD">
+<div class="container">
+  @let itemRD = itemRD$ | async;
   @if (itemRD?.hasSucceeded) {
     <div class="item-page" @fadeInOut>
       @if (itemRD?.payload; as item) {
@@ -18,21 +19,31 @@
                   </a>
                 </div>
               }
+              @if (metadataState$ | async; as metadataState) {
+              @if (metadataState.loading) {
+                <ds-loading message="{{'item.page.metadata.loading' | translate}}"></ds-loading>
+              }
+              @if (metadataState.error) {
+                <ds-error message="{{'item.page.metadata.error' | translate}}"></ds-error>
+              }
+              @if (metadataState.metadata) {
               <div class="table-responsive">
                 <table class="table  table-striped">
                   <tbody>
-                    @for (mdEntry of (metadata$ | async) | keyvalue; track mdEntry) {
+                    @for (mdEntry of metadataState.metadata | keyvalue; track mdEntry) {
                       @for (mdValue of mdEntry.value; track mdValue) {
                         <tr>
                           <td>{{mdEntry.key}}</td>
                           <td>{{mdValue.value}}</td>
-                          <td>{{mdValue.language}}</td>
+                          <td>{{mdValue.language || '—'}}</td>
                         </tr>
                       }
                     }
                   </tbody>
                 </table>
               </div>
+              }
+              }
               <ds-item-page-full-file-section [item]="item"></ds-item-page-full-file-section>
               <ds-item-page-collections [item]="item"></ds-item-page-collections>
               <ds-item-versions class="mt-2" [item]="item"></ds-item-versions>

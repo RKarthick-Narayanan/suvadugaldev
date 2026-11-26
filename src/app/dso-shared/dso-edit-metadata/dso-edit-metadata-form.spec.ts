@@ -1,3 +1,4 @@
+import { ArrayMoveChangeAnalyzer } from '@dspace/core/data/array-move-change-analyzer.service';
 import { DSpaceObject } from '@dspace/core/shared/dspace-object.model';
 import { MetadataValue } from '@dspace/core/shared/metadata.models';
 
@@ -42,6 +43,43 @@ describe('DsoEditMetadataForm', () => {
     form = new DsoEditMetadataForm(dso.metadata);
   });
 
+
+  for (const [existing, added] of [['ta', 'en'], ['en', 'ta']]) {
+    it(`appends ${added} without replacing the existing ${existing} value`, () => {
+      const original = Object.assign(new MetadataValue(), {
+        value: 'Original', language: existing, place: 0, authority: 'key', confidence: 600, securityLevel: 1,
+      });
+      form = new DsoEditMetadataForm({ 'dc.title': [original] });
+      form.add();
+      form.newValue.newValue.value = 'New';
+      form.newValue.newValue.language = added;
+      form.setMetadataField('dc.title');
+      expect(form.getOperations(new ArrayMoveChangeAnalyzer<number>())).toEqual([jasmine.objectContaining({
+        op: 'add', path: '/metadata/dc.title/-', value: jasmine.objectContaining({ language: added, value: 'New' }),
+      })]);
+      expect(form.fields['dc.title'][0].originalValue).toBe(original);
+    });
+  }
+
+  it('moves bilingual values by position and leaves unrelated fields out of the PATCH', () => {
+    const tamil = Object.assign(new MetadataValue(), { value: 'Tamil', language: 'ta', place: 0 });
+    const english = Object.assign(new MetadataValue(), { value: 'English', language: 'en', place: 1 });
+    form = new DsoEditMetadataForm({ ...dso.metadata, 'dc.title': [tamil, english] });
+    form.fields['dc.title'][0].newValue.place = 1;
+    form.fields['dc.title'][1].newValue.place = 0;
+    const operations = form.getOperations(new ArrayMoveChangeAnalyzer<number>());
+    expect(operations.length).toBe(1);
+    expect(operations[0]).toEqual(jasmine.objectContaining({ op: 'move' }));
+    const [move] = operations;
+    if (move.op === 'move') {
+      const reordered = [tamil, english];
+      const [moved] = reordered.splice(Number(move.from.split('/').at(-1)), 1);
+      reordered.splice(Number(move.path.split('/').at(-1)), 0, moved);
+      expect(reordered).toEqual([english, tamil]);
+    }
+    expect(tamil.place).toBe(0);
+    expect(english.place).toBe(1);
+  });
 
   describe('adding a new value', () => {
     beforeEach(() => {

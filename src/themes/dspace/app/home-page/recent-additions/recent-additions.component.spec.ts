@@ -54,6 +54,24 @@ describe('Recent additions', () => {
     expect(fixture.nativeElement.textContent).toContain('suvadugal.home.recent.empty');
   });
 
+  it('prefers the locale-selected title metadata over an unrelated name', () => {
+    const fixture = TestBed.createComponent(RecentAdditionsComponent);
+    fixture.detectChanges();
+    const component = fixture.componentInstance;
+    for (const title of ['Maattu Kombu Aattam-Bull Horn Dance', 'ஆதிக் கலை உறவுகளின் மாட்டுக் கொம்பு ஆட்டம்']) {
+      component.itemRD$ = of({
+        hasSucceeded: true,
+        payload: { page: [{
+          id: 'one', uuid: 'one', name: 'Tamil name',
+          firstMetadataValue: (key: string) => key === 'dc.title' ? title : null,
+        }] },
+      } as any);
+      fixture.changeDetectorRef.markForCheck();
+      fixture.detectChanges();
+      expect(fixture.nativeElement.querySelector('.recent-card h3').textContent).toContain(title);
+    }
+  });
+
   it('renders item-specific links and fallback and distinguishes loading and failure', () => {
     const fixture = TestBed.createComponent(RecentAdditionsComponent);
     fixture.detectChanges();

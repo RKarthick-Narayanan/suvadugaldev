@@ -13,6 +13,7 @@ import { By } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { AuthService } from '@dspace/core/auth/auth.service';
 import { NotifyInfoService } from '@dspace/core/coar-notify/notify-info/notify-info.service';
 import { AuthorizationDataService } from '@dspace/core/data/feature-authorization/authorization-data.service';
 import { ItemDataService } from '@dspace/core/data/item-data.service';
@@ -28,6 +29,7 @@ import { HeadTagServiceMock } from '@dspace/core/testing/head-tag-service.mock';
 import { TranslateLoaderMock } from '@dspace/core/testing/translate-loader.mock';
 import { createPaginatedList } from '@dspace/core/testing/utils.test';
 import {
+  createFailedRemoteDataObject,
   createSuccessfulRemoteDataObject,
   createSuccessfulRemoteDataObject$,
 } from '@dspace/core/utilities/remote-data.utils';
@@ -38,6 +40,8 @@ import {
 import {
   BehaviorSubject,
   of,
+  Subject,
+  throwError,
 } from 'rxjs';
 
 import { DsoEditMenuComponent } from '../../shared/dso-page/dso-edit-menu/dso-edit-menu.component';
@@ -46,14 +50,19 @@ import { getMockThemeService } from '../../shared/theme-support/test/theme-servi
 import { ThemeService } from '../../shared/theme-support/theme.service';
 import { TruncatePipe } from '../../shared/utils/truncate.pipe';
 import { VarDirective } from '../../shared/utils/var.directive';
+import { ROUTES as workflowRoutes } from '../../workflowitems-edit-page/workflowitems-edit-page-routes';
+import { ROUTES as workspaceRoutes } from '../../workspaceitems-edit-page/workspaceitems-edit-page-routes';
 import { ThemedItemAlertsComponent } from '../alerts/themed-item-alerts.component';
 import { CollectionsComponent } from '../field-components/collections/collections.component';
+import { ROUTES as itemRoutes } from '../item-page-routes';
+import { ITEM_ACCESS_BY_TOKEN_PATH } from '../item-page-routing-paths';
 import { ThemedItemPageTitleFieldComponent } from '../simple/field-components/specific-field/title/themed-item-page-field.component';
 import { createRelationshipsObservable } from '../simple/item-types/shared/item.component.spec';
 import { ItemVersionsComponent } from '../versions/item-versions.component';
 import { ItemVersionsNoticeComponent } from '../versions/notice/item-versions-notice.component';
 import { ThemedFullFileSectionComponent } from './field-components/file-section/themed-full-file-section.component';
 import { FullItemPageComponent } from './full-item-page.component';
+import { ThemedFullItemPageComponent } from './themed-full-item-page.component';
 
 const mockItem: Item = Object.assign(new Item(), {
   bundles: createSuccessfulRemoteDataObject$(createPaginatedList([])),
@@ -80,6 +89,7 @@ describe('FullItemPageComponent', () => {
 
   let routeStub: ActivatedRouteStub;
   let routeData;
+  let userId$: BehaviorSubject<string>;
   let authorizationDataService: AuthorizationDataService;
   let serverResponseService: jasmine.SpyObj<ServerResponseService>;
   let signpostingDataService: jasmine.SpyObj<SignpostingDataService>;
@@ -100,6 +110,7 @@ describe('FullItemPageComponent', () => {
   };
 
   beforeEach(waitForAsync(() => {
+    userId$ = new BehaviorSubject<string>(null);
     routeData = {
       dso: createSuccessfulRemoteDataObject(mockItem),
       links: [mocklink, mocklink2],
@@ -144,6 +155,7 @@ describe('FullItemPageComponent', () => {
       providers: [
         { provide: ActivatedRoute, useValue: routeStub },
         { provide: ItemDataService, useValue: {} },
+        { provide: AuthService, useValue: { getAuthenticatedUserIdFromStore: () => userId$, isAuthenticated: () => of(false) } },
         { provide: HeadTagService, useValue: headTagService },
         { provide: AuthorizationDataService, useValue: authorizationDataService },
         { provide: ServerResponseService, useValue: serverResponseService },
@@ -181,6 +193,148 @@ describe('FullItemPageComponent', () => {
 
   afterEach(() => {
     fixture.debugElement.nativeElement.remove();
+  });
+
+  it('loads projected metadata only on the opted-in route and renders all languages', () => {
+    const projected = { 'dc.title': [{ value: 'English', language: 'en' }, { value: 'தமிழ்', language: 'ta' }, { value: 'Neutral', language: null }] };
+    const service = TestBed.inject(ItemDataService) as any;
+    service.getAllLanguagesMetadata = jasmine.createSpy('getAllLanguagesMetadata').and.returnValue(of(projected));
+    const read = service.getAllLanguagesMetadata;
+    const snapshot = routeStub.snapshot;
+    spyOnProperty(routeStub, 'snapshot').and.returnValue({ ...snapshot, routeConfig: { data: { allLanguagesMetadata: true } }, queryParams: {} } as any);
+    comp.ngOnInit();
+    fixture.detectChanges();
+    expect(read).toHaveBeenCalled();
+    expect(fixture.nativeElement.querySelector('table').textContent).toContain('English');
+    expect(fixture.nativeElement.querySelector('table').textContent).toContain('தமிழ்');
+    expect(fixture.nativeElement.querySelector('table').textContent).toContain('Neutral');
+    expect(fixture.nativeElement.querySelector('table').textContent).toContain('—');
+  });
+
+  it('shows loading until the projected request completes', () => {
+    const response = new Subject<any>();
+    const service = TestBed.inject(ItemDataService) as any;
+    service.getAllLanguagesMetadata = jasmine.createSpy('getAllLanguagesMetadata').and.returnValue(response);
+    const snapshot = routeStub.snapshot;
+    spyOnProperty(routeStub, 'snapshot').and.returnValue({ ...snapshot, routeConfig: { data: { allLanguagesMetadata: true } }, queryParams: {} } as any);
+    comp.ngOnInit();
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('table')).toBeNull();
+    response.next({ 'dc.title': [{ value: 'தமிழ்', language: 'ta' }] });
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('table').textContent).toContain('தமிழ்');
+  });
+
+  it('shows an error rather than incomplete metadata when the projection fails', () => {
+    const service = TestBed.inject(ItemDataService) as any;
+    service.getAllLanguagesMetadata = jasmine.createSpy('getAllLanguagesMetadata').and.returnValue(throwError(() => new Error('failed')));
+    const snapshot = routeStub.snapshot;
+    spyOnProperty(routeStub, 'snapshot').and.returnValue({ ...snapshot, routeConfig: { data: { allLanguagesMetadata: true } }, queryParams: {} } as any);
+    comp.ngOnInit();
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('table')).toBeNull();
+    expect(fixture.nativeElement.textContent).toContain('item.page.metadata.error');
+  });
+
+  it('clears and reloads projected metadata when the signed-in user changes', () => {
+    const response = new Subject<any>();
+    const service = TestBed.inject(ItemDataService) as any;
+    service.getAllLanguagesMetadata = jasmine.createSpy('getAllLanguagesMetadata').and.returnValues(
+      of({ 'dc.title': [{ value: 'Private', language: 'en' }] }), response,
+    );
+    const snapshot = routeStub.snapshot;
+    spyOnProperty(routeStub, 'snapshot').and.returnValue({ ...snapshot, routeConfig: { data: { allLanguagesMetadata: true } } } as any);
+    comp.ngOnInit();
+    fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).toContain('Private');
+    userId$.next('another-user');
+    fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).not.toContain('Private');
+    expect(service.getAllLanguagesMetadata).toHaveBeenCalledTimes(2);
+  });
+
+  it('cancels the previous item read when the Full Item route is reused', () => {
+    const pending = new Subject<any>();
+    const replacement = Object.assign(new Item(), mockItem, { uuid: 'replacement' });
+    const routeData$ = new BehaviorSubject(routeData);
+    Object.assign(routeStub, { data: routeData$ });
+    const service = TestBed.inject(ItemDataService);
+    service.getAllLanguagesMetadata = jasmine.createSpy().and.returnValues(
+      pending, of({ 'dc.title': [{ value: 'Replacement', language: 'en' }] }),
+    );
+    const snapshot = routeStub.snapshot;
+    spyOnProperty(routeStub, 'snapshot').and.returnValue({
+      ...snapshot, routeConfig: itemRoutes.find((route) => route.path === ':id').children.find((route) => route.path === 'full'),
+    } as any);
+    comp.ngOnInit();
+    fixture.detectChanges();
+    expect(pending.observed).toBeTrue();
+
+    routeData$.next({ ...routeData, dso: createSuccessfulRemoteDataObject(replacement) });
+    fixture.detectChanges();
+    expect(pending.observed).toBeFalse();
+    expect(service.getAllLanguagesMetadata).toHaveBeenCalledWith(replacement);
+    expect(service.getAllLanguagesMetadata).toHaveBeenCalledTimes(2);
+    pending.next({ 'dc.title': [{ value: 'Stale', language: 'en' }] });
+    expect(fixture.nativeElement.querySelector('table').textContent).toContain('Replacement');
+    expect(fixture.nativeElement.querySelector('table').textContent).not.toContain('Stale');
+  });
+
+  it('cancels the read when the current item becomes unavailable', () => {
+    const pending = new Subject<any>();
+    const routeData$ = new BehaviorSubject(routeData);
+    Object.assign(routeStub, { data: routeData$ });
+    const service = TestBed.inject(ItemDataService);
+    service.getAllLanguagesMetadata = jasmine.createSpy().and.returnValue(pending);
+    const snapshot = routeStub.snapshot;
+    spyOnProperty(routeStub, 'snapshot').and.returnValue({
+      ...snapshot, routeConfig: itemRoutes.find((route) => route.path === ':id').children.find((route) => route.path === 'full'),
+    } as any);
+    comp.ngOnInit();
+    fixture.detectChanges();
+    expect(pending.observed).toBeTrue();
+
+    routeData$.next({ ...routeData, dso: createFailedRemoteDataObject() });
+    expect(pending.observed).toBeFalse();
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('table')).toBeNull();
+    expect(service.getAllLanguagesMetadata).toHaveBeenCalledTimes(1);
+  });
+
+  for (const variant of [
+    { name: 'workspace', routes: workspaceRoutes, submissionKey: 'wsi' },
+    { name: 'workflow', routes: workflowRoutes, submissionKey: 'wfi' },
+    { name: 'token', routes: itemRoutes, path: ITEM_ACCESS_BY_TOKEN_PATH },
+  ]) {
+    it(`keeps the resolved metadata and existing controls on the ${variant.name} Full Item route`, () => {
+      const routeConfig = variant.routes.find((route) => route.path === ':id').children
+        .find((route) => route.component === ThemedFullItemPageComponent && (!variant.path || route.path === variant.path));
+      const snapshot = routeStub.snapshot;
+      spyOnProperty(routeStub, 'snapshot').and.returnValue({ ...snapshot, routeConfig } as any);
+      if (variant.submissionKey) {
+        routeData[variant.submissionKey] = createSuccessfulRemoteDataObject$({ id: 'submission' });
+      }
+      const service = TestBed.inject(ItemDataService);
+      service.getAllLanguagesMetadata = jasmine.createSpy();
+      comp.ngOnInit();
+      fixture.detectChanges();
+
+      expect(routeConfig).toBeDefined();
+      expect(service.getAllLanguagesMetadata).not.toHaveBeenCalled();
+      expect(fixture.nativeElement.querySelector('table').textContent).toContain('test item');
+      expect(comp.fromSubmissionObject).toBe(!!variant.submissionKey);
+      expect(!!fixture.nativeElement.querySelector('.simple-view-link')).toBe(!variant.submissionKey);
+    });
+  }
+
+  it('does not request the projection for token access', () => {
+    const service = TestBed.inject(ItemDataService) as any;
+    service.getAllLanguagesMetadata = jasmine.createSpy('getAllLanguagesMetadata');
+    const snapshot = routeStub.snapshot;
+    spyOnProperty(routeStub, 'snapshot').and.returnValue({ ...snapshot, routeConfig: { data: { allLanguagesMetadata: true } }, queryParams: { accessToken: 'token' } } as any);
+    comp.ngOnInit();
+    fixture.detectChanges();
+    expect(service.getAllLanguagesMetadata).not.toHaveBeenCalled();
   });
 
   it('should display the item\'s metadata', () => {

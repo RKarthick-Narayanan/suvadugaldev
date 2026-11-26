@@ -122,6 +122,15 @@
     </div>
   </div>
 }
-@if (!form) {
+@if (editingPermissionDenied) {
+  <div class="alert alert-danger" role="alert">{{ '403.forbidden' | translate }}</div>
+} @else if (metadataReadError) {
+  <div class="alert alert-danger" role="alert">
+    {{ (savedBeforeMetadataRefresh ? 'item.edit.metadata.projection.refresh-failed' : 'item.edit.metadata.projection.load-failed') | translate }}
+  </div>
+  <button type="button" class="btn btn-outline-primary" (click)="retryMetadataRead()">
+    {{ 'item.edit.metadata.projection.retry' | translate }}
+  </button>
+} @else if (!form) {
   <ds-loading></ds-loading>
 }

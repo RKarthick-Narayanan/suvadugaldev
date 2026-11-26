@@ -84,7 +84,7 @@ export const ROUTES: Route[] = [
           {
             path: 'metadata',
             component: ThemedDsoEditMetadataComponent,
-            data: { title: 'item.edit.tabs.metadata.title', showBreadcrumbs: true },
+            data: { title: 'item.edit.tabs.metadata.title', showBreadcrumbs: true, editAllMetadataLanguages: true },
             canActivate: [itemPageMetadataGuard],
           },
           {

@@ -17,6 +17,7 @@ import {
   Router,
   RouterLink,
 } from '@angular/router';
+import { AuthService } from '@dspace/core/auth/auth.service';
 import { NotifyInfoService } from '@dspace/core/coar-notify/notify-info/notify-info.service';
 import { AuthorizationDataService } from '@dspace/core/data/feature-authorization/authorization-data.service';
 import { ItemDataService } from '@dspace/core/data/item-data.service';
@@ -30,18 +31,21 @@ import { hasValue } from '@dspace/shared/utils/empty.util';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   BehaviorSubject,
+  combineLatest,
   Observable,
+  of,
 } from 'rxjs';
 import {
-  filter,
+  catchError,
   map,
+  startWith,
+  switchMap,
 } from 'rxjs/operators';
 
 import { fadeInOut } from '../../shared/animations/fade';
 import { DsoEditMenuComponent } from '../../shared/dso-page/dso-edit-menu/dso-edit-menu.component';
 import { ErrorComponent } from '../../shared/error/error.component';
 import { ThemedLoadingComponent } from '../../shared/loading/themed-loading.component';
-import { VarDirective } from '../../shared/utils/var.directive';
 import { ThemedItemAlertsComponent } from '../alerts/themed-item-alerts.component';
 import { CollectionsComponent } from '../field-components/collections/collections.component';
 import { ThemedItemPageTitleFieldComponent } from '../simple/field-components/specific-field/title/themed-item-page-field.component';
@@ -75,14 +79,13 @@ import { ThemedFullFileSectionComponent } from './field-components/file-section/
     ThemedItemPageTitleFieldComponent,
     ThemedLoadingComponent,
     TranslateModule,
-    VarDirective,
   ],
 })
 export class FullItemPageComponent extends ItemPageComponent implements OnInit, OnDestroy {
 
   itemRD$: BehaviorSubject<RemoteData<Item>>;
 
-  metadata$: Observable<MetadataMap>;
+  metadataState$: Observable<{ metadata?: MetadataMap; loading?: boolean; error?: boolean }>;
 
   /**
    * True when the itemRD has been originated from its workspaceite/workflowitem, false otherwise.
@@ -96,6 +99,7 @@ export class FullItemPageComponent extends ItemPageComponent implements OnInit, 
     protected router: Router,
     protected items: ItemDataService,
     protected authorizationService: AuthorizationDataService,
+    protected authService: AuthService,
     protected _location: Location,
     protected responseService: ServerResponseService,
     protected signpostingDataService: SignpostingDataService,
@@ -109,10 +113,24 @@ export class FullItemPageComponent extends ItemPageComponent implements OnInit, 
   /*** AoT inheritance fix, will hopefully be resolved in the near future **/
   ngOnInit(): void {
     super.ngOnInit();
-    this.metadata$ = this.itemRD$.pipe(
-      map((rd: RemoteData<Item>) => rd.payload),
-      filter((item: Item) => hasValue(item)),
-      map((item: Item) => item.metadata));
+    this.metadataState$ = combineLatest([this.itemRD$, this.authService.getAuthenticatedUserIdFromStore(), this.authService.isAuthenticated()]).pipe(
+      switchMap(([rd]) => {
+        const item = rd?.hasSucceeded ? rd.payload : undefined;
+        if (!item) {
+          return of({});
+        }
+        const enabled = this.route.snapshot.routeConfig?.data?.allLanguagesMetadata &&
+          !this.route.snapshot.queryParams?.accessToken;
+        if (!enabled) {
+          return of({ metadata: item.metadata });
+        }
+        return this.items.getAllLanguagesMetadata(item).pipe(
+          map((metadata) => ({ metadata })),
+          startWith({ loading: true }),
+          catchError(() => of({ error: true })),
+        );
+      }),
+    );
 
     this.subs.push(this.route.data.subscribe((data: Data) => {
       this.fromSubmissionObject = hasValue(data.wfi) || hasValue(data.wsi);

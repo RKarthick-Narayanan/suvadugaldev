@@ -67,6 +67,7 @@ export const ROUTES: Route[] = [
         path: 'full',
         component: ThemedFullItemPageComponent,
         data: {
+          allLanguagesMetadata: true,
           menuRoute: MenuRoute.ITEM_PAGE,
         },
         resolve: {

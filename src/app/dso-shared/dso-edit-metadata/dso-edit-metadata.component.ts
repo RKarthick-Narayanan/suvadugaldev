@@ -13,9 +13,13 @@ import {
   ActivatedRoute,
   Data,
 } from '@angular/router';
+import { AuthService } from '@dspace/core/auth/auth.service';
 import { DATA_SERVICE_FACTORY } from '@dspace/core/cache/builders/build-decorators';
 import { ArrayMoveChangeAnalyzer } from '@dspace/core/data/array-move-change-analyzer.service';
 import { HALDataService } from '@dspace/core/data/base/hal-data-service.interface';
+import { AuthorizationDataService } from '@dspace/core/data/feature-authorization/authorization-data.service';
+import { FeatureID } from '@dspace/core/data/feature-authorization/feature-id';
+import { ItemDataService } from '@dspace/core/data/item-data.service';
 import { RemoteData } from '@dspace/core/data/remote-data';
 import { UpdateDataService } from '@dspace/core/data/update-data.service';
 import {
@@ -28,6 +32,7 @@ import { Context } from '@dspace/core/shared/context.model';
 import { DSpaceObject } from '@dspace/core/shared/dspace-object.model';
 import { GenericConstructor } from '@dspace/core/shared/generic-constructor';
 import { Item } from '@dspace/core/shared/item.model';
+import { MetadataMap } from '@dspace/core/shared/metadata.models';
 import { getFirstCompletedRemoteData } from '@dspace/core/shared/operators';
 import { ResourceType } from '@dspace/core/shared/resource-type';
 import { MetadataSecurityConfigurationService } from '@dspace/core/submission/metadatasecurityconfig-data.service';
@@ -45,15 +50,17 @@ import {
   BehaviorSubject,
   combineLatest,
   combineLatest as observableCombineLatest,
+  EMPTY,
   Observable,
   of,
   Subscription,
 } from 'rxjs';
 import {
   catchError,
+  defaultIfEmpty,
   map,
   switchMap,
-  tap,
+  take,
 } from 'rxjs/operators';
 
 import { AlertComponent } from '../../shared/alert/alert.component';
@@ -186,6 +193,13 @@ export class DsoEditMetadataComponent implements OnInit, OnDestroy {
    */
   securitySettings$: BehaviorSubject<MetadataSecurityConfiguration> = new BehaviorSubject(null);
 
+  metadataReadError = false;
+  editingPermissionDenied = false;
+  savedBeforeMetadataRefresh = false;
+  private editingProjectedMetadata = false;
+  private metadataReadSubscription: Subscription;
+  private saveSubscription: Subscription;
+
   public readonly Context = Context;
 
   constructor(protected route: ActivatedRoute,
@@ -205,29 +219,106 @@ export class DsoEditMetadataComponent implements OnInit, OnDestroy {
    */
   ngOnInit(): void {
     if (hasNoValue(this.dso)) {
-      this.dsoUpdateSubscription = observableCombineLatest([this.route.data, this.route.parent.data]).pipe(
+      const routeData$ = combineLatest([this.route.data, this.route.parent.data]).pipe(
         map(([data, parentData]: [Data, Data]) => Object.assign({}, data, parentData)),
-        tap((data: any) => this.initDSO(data.dso.payload)),
-        switchMap(() => combineLatest([this.retrieveDataService(),this.getSecuritySettings()])),
-      ).subscribe(([dataService, securitySettings]: [UpdateDataService<DSpaceObject>, MetadataSecurityConfiguration]) => {
-        this.securitySettings$.next(securitySettings);
-        this.initDataService(dataService);
-        this.initForm();
-        this.isFormInitialized$.next(true);
-      });
+      );
+      const optIn = this.route.snapshot.routeConfig?.data?.editAllMetadataLanguages === true;
+      this.dsoUpdateSubscription = routeData$.pipe(
+        switchMap((data) => {
+          if (optIn) {
+            this.clearEditorSession();
+            if (!data.dso?.hasSucceeded || !data.dso.payload) {
+              return EMPTY;
+            }
+          }
+          this.initDSO(data.dso.payload);
+          this.editingProjectedMetadata = optIn && this.dso instanceof Item && this.dso.isArchived === true;
+          const settings$ = () => combineLatest([this.retrieveDataService(), this.getSecuritySettings()]);
+          if (!this.editingProjectedMetadata) {
+            return settings$();
+          }
+          const auth = this.parentInjector.get(AuthService);
+          return combineLatest([auth.getAuthenticatedUserIdFromStore(), auth.isAuthenticated()]).pipe(
+            switchMap(([userId, authenticated]) => {
+              this.clearEditorSession();
+              if (!authenticated || !userId) {
+                return EMPTY;
+              }
+              const href = this.dso._links?.self?.href;
+              const allowed$ = href
+                ? this.parentInjector.get(AuthorizationDataService).isAuthorized(FeatureID.CanEditMetadata, href, undefined, false, false)
+                : of(false);
+              return allowed$.pipe(
+                take(1),
+                defaultIfEmpty(false),
+                catchError(() => of(false)),
+                switchMap((allowed) => {
+                  this.editingPermissionDenied = !allowed;
+                  return allowed ? settings$() : EMPTY;
+                }),
+              );
+            }),
+          );
+        }),
+      ).subscribe(([dataService, securitySettings]) => this.prepareEditor(dataService, securitySettings));
     } else {
       this.initDSOType(this.dso);
-      observableCombineLatest([this.retrieveDataService(), this.getSecuritySettings()])
-        .subscribe(([dataService, securitySettings]: [UpdateDataService<DSpaceObject>, MetadataSecurityConfiguration]) => {
-          this.securitySettings$.next(securitySettings);
-          this.initDataService(dataService);
-          this.initForm();
-          this.isFormInitialized$.next(true);
-        });
+      this.dsoUpdateSubscription = combineLatest([this.retrieveDataService(), this.getSecuritySettings()])
+        .subscribe(([dataService, securitySettings]) => this.prepareEditor(dataService, securitySettings));
     }
     this.savingOrLoadingFieldValidation$ = observableCombineLatest([this.saving$, this.loadingFieldValidation$]).pipe(
       map(([saving, loading]: [boolean, boolean]) => saving || loading),
     );
+  }
+
+  private prepareEditor(dataService: UpdateDataService<DSpaceObject>, securitySettings: MetadataSecurityConfiguration): void {
+    this.securitySettings$.next(securitySettings);
+    this.initDataService(dataService);
+    if (this.editingProjectedMetadata) {
+      this.readProjectedMetadata();
+    } else {
+      this.initForm();
+      this.isFormInitialized$.next(true);
+    }
+  }
+
+  private clearEditorSession(): void {
+    this.metadataReadSubscription?.unsubscribe();
+    this.saveSubscription?.unsubscribe();
+    this.isFormInitialized$.next(false);
+    this.form = undefined;
+    this.saving$.next(false);
+    this.loadingFieldValidation$.next(false);
+    this.metadataReadError = false;
+    this.savedBeforeMetadataRefresh = false;
+    this.editingPermissionDenied = false;
+  }
+
+  retryMetadataRead(): void {
+    if (this.editingProjectedMetadata && this.metadataReadError) {
+      this.readProjectedMetadata();
+    }
+  }
+
+  private readProjectedMetadata(): void {
+    this.metadataReadSubscription?.unsubscribe();
+    this.metadataReadError = false;
+    this.isFormInitialized$.next(false);
+    this.form = undefined;
+    this.metadataReadSubscription = this.parentInjector.get(ItemDataService)
+      .getAllLanguagesMetadata(this.dso as Item, { forEditing: true }).pipe(
+        take(1),
+        defaultIfEmpty(null),
+        catchError(() => of(null)),
+      ).subscribe((metadata) => {
+        if (metadata) {
+          this.initForm(metadata);
+          this.isFormInitialized$.next(true);
+          this.savedBeforeMetadataRefresh = false;
+        } else {
+          this.metadataReadError = true;
+        }
+      });
   }
 
   /**
@@ -295,8 +386,8 @@ export class DsoEditMetadataComponent implements OnInit, OnDestroy {
    * Initialise the dynamic form object by passing the DSpaceObject's metadata
    * Call onValueSaved() to update the form's state properties
    */
-  initForm(): void {
-    this.form = new DsoEditMetadataForm(this.dso.metadata);
+  initForm(metadata: MetadataMap = this.dso.metadata): void {
+    this.form = new DsoEditMetadataForm(metadata);
     this.onValueSaved();
     this.cdr.detectChanges();
   }
@@ -316,22 +407,44 @@ export class DsoEditMetadataComponent implements OnInit, OnDestroy {
    * Display notifications and reset the form afterwards if successful
    */
   submit(): void {
+    if (!this.isFormInitialized$.value || this.saving$.value || !this.hasChanges) {
+      return;
+    }
     this.saving$.next(true);
-    this.updateDataService.patch(this.dso, this.form.getOperations(this.arrayMoveChangeAnalyser)).pipe(
+    this.saveSubscription = this.updateDataService.patch(this.dso, this.form.getOperations(this.arrayMoveChangeAnalyser)).pipe(
       getFirstCompletedRemoteData(),
-    ).subscribe((rd: RemoteData<DSpaceObject>) => {
-      this.saving$.next(false);
-      if (rd.hasFailed) {
-        this.notificationsService.error(this.translateService.instant(`${this.dsoType}.edit.metadata.notifications.error.title`), rd.errorMessage);
-      } else {
+    ).subscribe({
+      next: (rd: RemoteData<DSpaceObject>) => {
+        this.saving$.next(false);
+        if (!rd.hasSucceeded) {
+          if (this.editingProjectedMetadata && [401, 403].includes(rd.statusCode)) {
+            this.clearEditorSession();
+            this.editingPermissionDenied = true;
+          }
+          this.showSaveError(rd.errorMessage);
+          return;
+        }
         this.notificationsService.success(
           this.translateService.instant(`${this.dsoType}.edit.metadata.notifications.saved.title`),
           this.translateService.instant(`${this.dsoType}.edit.metadata.notifications.saved.content`),
         );
-        this.dso = rd.payload;
-        this.initForm();
-      }
+        if (this.editingProjectedMetadata) {
+          this.savedBeforeMetadataRefresh = true;
+          this.readProjectedMetadata();
+        } else {
+          this.dso = rd.payload;
+          this.initForm();
+        }
+      },
+      error: (error: unknown) => {
+        this.saving$.next(false);
+        this.showSaveError(error instanceof Error ? error.message : '');
+      },
     });
+  }
+
+  private showSaveError(message: string): void {
+    this.notificationsService.error(this.translateService.instant(`${this.dsoType}.edit.metadata.notifications.error.title`), message);
   }
 
   /**
@@ -352,7 +465,11 @@ export class DsoEditMetadataComponent implements OnInit, OnDestroy {
   setMetadataField(): void {
     this.form.resetReinstatable();
     this.loadingFieldValidation$.next(true);
+    const editedForm = this.form;
     this.metadataFieldSelectorComponent.validate().subscribe((valid: boolean) => {
+      if (editedForm !== this.form) {
+        return;
+      }
       this.loadingFieldValidation$.next(false);
       if (valid) {
         this.form.setMetadataField(this.newMdField);
@@ -440,10 +557,10 @@ export class DsoEditMetadataComponent implements OnInit, OnDestroy {
     if (!this.hasSecurityMetadata) {
       // for newly added metadata fields, set the security level to the default security level
       // (in case there is no custom security level for the metadata field)
-      const defaultSecurity = this.securitySettings$.value.metadataSecurityDefault;
-      const lastDefaultSecurityLevel = defaultSecurity[defaultSecurity.length - 1];
-
-      this.form.fields[this.newMdField][this.form.fields[this.newMdField].length - 1].newValue.securityLevel = lastDefaultSecurityLevel;
+      const lastDefaultSecurityLevel = this.securitySettings$.value?.metadataSecurityDefault?.at(-1);
+      if (hasValue(lastDefaultSecurityLevel)) {
+        this.form.fields[this.newMdField].at(-1).newValue.securityLevel = lastDefaultSecurityLevel;
+      }
     }
   }
 
@@ -458,6 +575,8 @@ export class DsoEditMetadataComponent implements OnInit, OnDestroy {
    * Unsubscribe from any open subscriptions
    */
   ngOnDestroy(): void {
+    this.metadataReadSubscription?.unsubscribe();
+    this.saveSubscription?.unsubscribe();
     if (hasValue(this.dsoUpdateSubscription)) {
       this.dsoUpdateSubscription.unsubscribe();
     }

@@ -1,4 +1,9 @@
 {
+  "item.edit.metadata.projection.load-failed": "Metadata could not be loaded for safe editing.",
+  "item.edit.metadata.projection.refresh-failed": "Changes were saved, but the complete metadata could not be reloaded.",
+  "item.edit.metadata.projection.retry": "Retry loading metadata",
+  "item.page.metadata.loading": "Loading metadata…",
+  "item.page.metadata.error": "Unable to load all metadata.",
   "suvadugal.card.entity.space": "Performance Space",
   "suvadugal.card.entity.performance": "Performance",
   "suvadugal.card.entity.instrument": "Instrument",

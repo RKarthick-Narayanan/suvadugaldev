@@ -1,4 +1,9 @@
 {
+  "item.edit.metadata.projection.load-failed": "பாதுகாப்பாகத் திருத்துவதற்கான மெட்டாடேட்டாவை ஏற்ற முடியவில்லை.",
+  "item.edit.metadata.projection.refresh-failed": "மாற்றங்கள் சேமிக்கப்பட்டன. முழு மெட்டாடேட்டாவையும் மீண்டும் ஏற்ற முடியவில்லை.",
+  "item.edit.metadata.projection.retry": "மெட்டாடேட்டாவை மீண்டும் ஏற்று",
+  "item.page.metadata.loading": "மெட்டாடேட்டா ஏற்றப்படுகிறது…",
+  "item.page.metadata.error": "அனைத்து மெட்டாடேட்டாவையும் ஏற்ற முடியவில்லை.",
   "suvadugal.card.entity.space": "நிகழ்விடம்",
   "suvadugal.card.entity.performance": "நிகழ்வு",
   "suvadugal.card.entity.instrument": "இசைக்கருவி",
